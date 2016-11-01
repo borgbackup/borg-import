@@ -1,0 +1,12 @@
+MANIFEST
+docs/_build
+build
+dist
+borg-env
+.tox
+*.egg-info
+*.pyc
+*.pyo
+.idea/
+.cache/
+
