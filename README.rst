@@ -1,5 +1,5 @@
-What is borg-rsyncimport?
+What is borg-import?
 =========================
 
-borg-rsyncimport (short: bri) can import existing rsync+hardlink or rsnapshot
+borg-import can import existing rsync+hardlink or rsnapshot
 based backups into a borgbackup repository.
