@@ -1,64 +1,28 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# C extensions
+MANIFEST
+docs/_build
+build
+dist
+borg-env
+.tox
+hashindex.c
+chunker.c
+compress.c
+crypto.c
+src/borg/platform/darwin.c
+src/borg/platform/freebsd.c
+src/borg/platform/linux.c
+src/borg/platform/posix.c
+*.egg-info
+*.pyc
+*.pyo
 *.so
-
-# Distribution / packaging
-.Python
-env/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
+.idea/
+.cache/
+src/borg/_version.py
+borg.build/
+borg.dist/
+borg.exe
 .coverage
 .coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*,cover
-.hypothesis/
-
-# Translations
-*.mo
-*.pot
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
-
-# virtualenv
-.venv/
-venv/
-ENV/
-
-# pycharm editor cache
-.idea/
+.vagrant
+.eggs
