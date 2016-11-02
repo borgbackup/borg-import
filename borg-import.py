@@ -1,6 +1,6 @@
 #!venv/bin/python
 
-from borg_import.borg_import import main
+from borg_import.main import main
 
 if __name__ == '__main__':
     main()

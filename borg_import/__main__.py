@@ -1,3 +1,3 @@
-from .borg_import import main
+from .main import main
 
 main()
