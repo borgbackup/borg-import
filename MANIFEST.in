@@ -1,0 +1,9 @@
+include README.rst AUTHORS LICENSE CHANGES.rst MANIFEST.in
+graft src
+recursive-exclude src *.pyc
+recursive-exclude src *.pyo
+recursive-include docs *
+recursive-exclude docs *.pyc
+recursive-exclude docs *.pyo
+prune docs/_build
+exclude .gitattributes .gitignore .travis.yml
