@@ -1,4 +1,4 @@
-#!venv/bin/python
+#!borg-env/bin/python
 
 from borg_import.main import main
 
