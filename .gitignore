@@ -9,4 +9,5 @@ borg-env
 *.pyo
 .idea/
 .cache/
+src/borg_import/_version.py
 
