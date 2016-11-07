@@ -2,28 +2,23 @@ import os
 import re
 
 
-def discover(root, dirs_filter):
+def discover(root, depth):
     """
-    recurse starting from <root> path and yield relative dir pathes as long
-    as they get through the <dirs_filter>.
+    recurse starting from <root> path and yield relative dir pathes with wanted <depth>.
     """
-    for base, dirs, files in os.walk(root):
-        # modify the dirs list in place, so os.walk uses it for recursion:
-        dirs[:] = sorted(dirs_filter(root, base, dirs, files))
-        for dir in dirs:
-            abs_path = os.path.join(base, dir)
-            rel_path = os.path.relpath(abs_path, root)
-            yield rel_path
+    def _discover(root, current_dir, current_depth, wanted_depth):
+        entries = sorted(os.listdir(current_dir))
+        for entry in entries:
+            path = os.path.join(current_dir, entry)
+            if os.path.isdir(path):
+                if current_depth == wanted_depth:
+                    yield os.path.relpath(path, root)
+                else:
+                    for path in _discover(root, path, current_depth + 1, wanted_depth):
+                        yield path
 
-
-def depth_filter(root, base, dirs, files, max_depth):
-    """filter dirs by <max_depth> (relative to root)"""
-    for dir in dirs:
-        abs_path = os.path.join(base, dir)
-        rel_path = os.path.relpath(abs_path, root)
-        depth = rel_path.count(os.path.sep) + 1
-        if depth <= max_depth:
-            yield dir
+    for path in _discover(root, root, 1, depth):
+        yield path
 
 
 def parser(rel_path, regex):
