@@ -1,7 +1,21 @@
 import os
+import re
+
+from .helpers.discover import discover, parser
+from .helpers.names import make_name
+from .helpers.timestamps import datetime_from_mtime
 
 
-def get_snapshots(rsnapshot_root):
-    """Get all snapshot directories within the rsnapshot root directory."""
-    snapshots = os.listdir(rsnapshot_root)
-    return snapshots
+def get_snapshots(root):
+    """Get all snapshot metadata discovered in the rsnapshot root directory."""
+    regex = re.compile(r'(?P<snapshot_id>.+)/(?P<backup_set>.+)')
+    for path in discover(root, 2):
+        parsed = parser(path, regex)
+        if parsed is not None:
+            abs_path = os.path.join(root, path)
+            meta = dict(
+                name=make_name(parsed['backup_set'], parsed['snapshot_id']),
+                path=abs_path,
+                timestamp=datetime_from_mtime(abs_path),
+            )
+            yield meta

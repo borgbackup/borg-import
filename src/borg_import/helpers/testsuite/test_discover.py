@@ -1,7 +1,6 @@
 import re
-from functools import partial
 
-from ..discover import discover, depth_filter, parser
+from ..discover import discover, parser
 
 
 def test_discover(tmpdir):
@@ -11,9 +10,8 @@ def test_discover(tmpdir):
     host1_dir.mkdir('1')
     host2_dir = root_dir.mkdir('hostname2')
     host2_dir.mkdir('3')
-    df = partial(depth_filter, max_depth=2)
-    dirs = list(discover(str(root_dir), df))
-    assert dirs == ['hostname1', 'hostname2', 'hostname1/0', 'hostname1/1', 'hostname2/3']
+    dirs = list(discover(str(root_dir), 2))
+    assert dirs == ['hostname1/0', 'hostname1/1', 'hostname2/3']
 
 
 def test_parser():
