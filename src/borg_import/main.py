@@ -25,14 +25,19 @@ def borg_import(args, archive_name, path, timestamp=None):
 
     log.debug('Borg command line: %r', borg_cmdline)
     log.debug('Borg working directory: %s', path)
-    subprocess.check_call(borg_cmdline, cwd=str(path))
+    try:
+        subprocess.check_call(borg_cmdline, cwd=str(path))
+    except subprocess.CalledProcessError as cpe:
+        if cpe.returncode != 1:
+            raise
+        log.debug('Borg exited with a warning (being quiet about it since Borg spoke already)')
 
 
 def list_borg_archives(args):
     borg_cmdline = ['borg', 'list', '--short']
     repository = args.repository.resolve()
     borg_cmdline.append(str(repository))
-    return subprocess.check_output(borg_cmdline).decode().split('\n')
+    return subprocess.check_output(borg_cmdline).decode().splitlines()
 
 
 class Importer:
