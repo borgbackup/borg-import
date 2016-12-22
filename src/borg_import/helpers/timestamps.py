@@ -10,7 +10,7 @@ def datetime_from_mtime(path):
     or from root/ (assuming that the directory timestamp was modified
     at backup time).
     """
-    t = os.path.getmtime(path)
+    t = path.stat().st_mtime
     return datetime.fromtimestamp(t)
 
 
@@ -47,7 +47,7 @@ def datetime_from_file(path):
 
     e.g. root/TIMESTAMP contains: Mon Oct 31 23:35:50 CET 2016
     """
-    with open(path, 'r') as f:
+    with path.open() as f:
         ts = f.readline().strip()
     return datetime_from_string(ts)
 
