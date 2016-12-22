@@ -39,11 +39,11 @@ def import_rsnapshot(args):
     existing_archives = list_borg_archives(args)
 
     import_path = args.rsnapshot_root / 'borg-import-dir'
-    import_journal = args.rsnapshot_root / 'borg-import-dir.snapshot'
 
-    if import_path.exists():
-        print('{} exists. Cannot continue.'.format(import_path))
-        return 1
+    try:
+        import_path.unlink()
+    except OSError:
+        pass
 
     for rsnapshot in get_snapshots(args.rsnapshot_root):
         timestamp = rsnapshot['timestamp'].replace(microsecond=0)
@@ -60,20 +60,17 @@ def import_rsnapshot(args):
             continue
 
         print('Importing {} (timestamp {}) as {}'.format(rsnapshot['name'], timestamp, archive_name))
-        log.debug('  Moving {} -> {}'.format(rsnapshot['path'], import_path))
 
-        with import_journal.open('w') as fd:
-            fd.write('Current snapshot: %s\n' % rsnapshot['name'])
-            fd.write('Original path: %s\n' % snapshot_original_path)
-
-        snapshot_original_path.rename(import_path)
+        log.debug('  Symlinking {} -> {}'.format(import_path, rsnapshot['path']))
 
         try:
-            borg_import(args, archive_name, import_path, timestamp=timestamp)
-        finally:
-            log.debug('  Moving {} -> {}'.format(import_path, rsnapshot['path']))
-            import_path.rename(snapshot_original_path)
-            import_journal.unlink()
+            import_path.unlink()
+        except OSError:
+            pass
+
+        import_path.symlink_to(snapshot_original_path.relative_to(import_path.parent), target_is_directory=True)
+
+        borg_import(args, archive_name, import_path, timestamp=timestamp)
 
 
 def main():
