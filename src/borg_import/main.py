@@ -1,8 +1,11 @@
 import argparse
+import logging
 import shutil
 import sys
 
 from .rsnapshots import get_snapshots
+
+log = logging.getLogger(__name__)
 
 
 def main():
@@ -12,7 +15,12 @@ def main():
         return 1
     parser = argparse.ArgumentParser()
     parser.add_argument("--rsnapshot-root", help="Path to rsnapshot root directory")
+
+    parser.set_defaults(log_level=logging.WARNING)
+    parser.add_argument("--debug", action='store_const', dest='log_level', const=logging.DEBUG)
+
     args = parser.parse_args()
+    logging.basicConfig(level=args.log_level)
 
     if args.rsnapshot_root:
         for rsnapshot in get_snapshots(args.rsnapshot_root):
