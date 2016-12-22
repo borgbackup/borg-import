@@ -46,7 +46,7 @@ setup(
     zip_safe=False,
     entry_points={
         'console_scripts': [
-            'borg-import = borg_import.main:below_main',
+            'borg-import = borg_import.main:main',
         ]
     },
     setup_requires=['setuptools_scm>=1.7', ],

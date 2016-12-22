@@ -35,49 +35,83 @@ def list_borg_archives(args):
     return subprocess.check_output(borg_cmdline).decode().split('\n')
 
 
-def import_rsnapshot(args):
-    existing_archives = list_borg_archives(args)
+class Importer:
+    name = 'name-of-command'
+    description = 'descriptive description describing this importer'
 
-    import_path = args.rsnapshot_root / 'borg-import-dir'
-    import_journal = args.rsnapshot_root / 'borg-import-dir.snapshot'
+    def populate_parser(self, parser):
+        """
+        Add arguments to argparse *parser*.
 
-    if import_path.exists():
-        print('{} exists. Cannot continue.'.format(import_path))
-        return 1
+        Specify the callback for the importer like so::
 
-    for rsnapshot in get_snapshots(args.rsnapshot_root):
-        timestamp = rsnapshot['timestamp'].replace(microsecond=0)
-        snapshot_original_path = rsnapshot['path']
-        name = rsnapshot['name']
-        archive_name = args.prefix + name
+            parser.set_defaults(function=self.import_something)
 
-        if args.backup_sets and rsnapshot['backup_set'] not in args.backup_sets:
-            print('Skipping (backup set is not selected):', name)
-            continue
+        Then you can define *import_something* like this in the class::
 
-        if archive_name in existing_archives:
-            print('Skipping (already exists in repository):', name)
-            continue
+            def import_something(self, args):
+                ...  # do something!
+        """
 
-        print('Importing {} (timestamp {}) '.format(name, timestamp), end='')
-        if archive_name != name:
-            print('as', archive_name)
-        else:
-            print()
-        log.debug('  Moving {} -> {}'.format(rsnapshot['path'], import_path))
 
-        with import_journal.open('w') as fd:
-            fd.write('Current snapshot: %s\n' % rsnapshot['name'])
-            fd.write('Original path: %s\n' % snapshot_original_path)
+class rsnapshotImporter(Importer):
+    name = 'rsnapshot'
+    description = 'import rsnapshot backups'
 
-        snapshot_original_path.rename(import_path)
+    def populate_parser(self, parser):
+        parser.add_argument('--backup-set', help='Only consider given backup set (can be given multiple times).',
+                            action='append', dest='backup_sets')
+        parser.add_argument('rsnapshot_root', metavar='RSNAPSHOT_ROOT',
+                            help='Path to rsnapshot root directory', type=Path)
+        # TODO: support the full wealth of borg possibilities
+        parser.add_argument('repository', metavar='REPOSITORY', help='Borg repository', type=Path)
+        parser.set_defaults(function=self.import_rsnapshot)
 
-        try:
-            borg_import(args, archive_name, import_path, timestamp=timestamp)
-        finally:
-            log.debug('  Moving {} -> {}'.format(import_path, rsnapshot['path']))
-            import_path.rename(snapshot_original_path)
-            import_journal.unlink()
+    def import_rsnapshot(self, args):
+        existing_archives = list_borg_archives(args)
+
+        import_path = args.rsnapshot_root / 'borg-import-dir'
+        import_journal = args.rsnapshot_root / 'borg-import-dir.snapshot'
+
+        if import_path.exists():
+            print('{} exists. Cannot continue.'.format(import_path))
+            return 1
+
+        for rsnapshot in get_snapshots(args.rsnapshot_root):
+            timestamp = rsnapshot['timestamp'].replace(microsecond=0)
+            snapshot_original_path = rsnapshot['path']
+            name = rsnapshot['name']
+            archive_name = args.prefix + name
+
+            if args.backup_sets and rsnapshot['backup_set'] not in args.backup_sets:
+                print('Skipping (backup set is not selected):', name)
+                continue
+
+            if archive_name in existing_archives:
+                print('Skipping (already exists in repository):', name)
+                continue
+
+            print('Importing {} (timestamp {}) '.format(name, timestamp), end='')
+            if archive_name != name:
+                print('as', archive_name)
+            else:
+                print()
+            log.debug('  Moving {} -> {}'.format(rsnapshot['path'], import_path))
+
+            # We move the snapshots to import_path so that the files cache in Borg can work effectively.
+
+            with import_journal.open('w') as fd:
+                fd.write('Current snapshot: %s\n' % rsnapshot['name'])
+                fd.write('Original path: %s\n' % snapshot_original_path)
+
+            snapshot_original_path.rename(import_path)
+
+            try:
+                borg_import(args, archive_name, import_path, timestamp=timestamp)
+            finally:
+                log.debug('  Moving {} -> {}'.format(import_path, rsnapshot['path']))
+                import_path.rename(snapshot_original_path)
+                import_journal.unlink()
 
 
 def main():
@@ -94,41 +128,31 @@ def main():
                                    "(note: Use -o=\"--foo --bar\" syntax to avoid parser confusion).")
     common_group.add_argument("--prefix", help="Add prefix to imported archive names", default='')
 
-    common_group.set_defaults(log_level=logging.WARNING)
     common_group.add_argument("--debug", action='store_const', dest='log_level', const=logging.DEBUG,
                               help='Display debug/trace messages.')
 
     parser = argparse.ArgumentParser(description='Import existing backups from other software to Borg')
-
+    parser.set_defaults(log_level=logging.WARNING)
 
     subparsers = parser.add_subparsers()
 
-    rsnapshot = subparsers.add_parser('rsnapshot', help='import rsnapshot backups', parents=[common_parser])
-    rsnapshot.add_argument("--backup-set", help="Only consider given backup set (can be given multiple times).",
-                           action='append', dest='backup_sets')
-    rsnapshot.add_argument('rsnapshot_root', metavar='RSNAPSHOT_ROOT',
-                           help='Path to rsnapshot root directory', type=Path)
-    # TODO: support the full wealth of borg possibilities
-    rsnapshot.add_argument('repository', metavar='REPOSITORY', help='Borg repository', type=Path)
-    rsnapshot.set_defaults(function=import_rsnapshot)
+    for importer_class in Importer.__subclasses__():
+        importer = importer_class()
+        subparser = subparsers.add_parser(importer.name, help=importer.description, parents=[common_parser])
+        importer.populate_parser(subparser)
 
     args = parser.parse_args()
     logging.basicConfig(level=args.log_level, format='%(message)s')
 
     if 'function' not in args:
         return parser.print_help()
-    return args.function(args)
-
-
-def below_main():
-    # We Don't Go To Ravenholm
     try:
-        sys.exit(main())
+        return args.function(args)
     except subprocess.CalledProcessError as cpe:
-        print('Borg invocation failed with status {}'.format(cpe.returncode))
+        print('{} invocation failed with status {}'.format(cpe.cmd[0], cpe.returncode))
         print('Command line was:', *[shlex.quote(s) for s in cpe.cmd])
-        sys.exit(cpe.returncode)
+        return cpe.returncode
 
 
 if __name__ == "__main__":
-    below_main()
+    sys.exit(main())
