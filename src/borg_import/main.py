@@ -121,7 +121,7 @@ class rsnapshotImporter(Importer):
 
 def main():
     if not shutil.which('borg'):
-        print('Borg does not seem to be installed. Please install Borg first.')
+        print('The \'borg\' command can\'t be found in the PATH. Please correctly install borgbackup first.')
         print('See instructions at https://borgbackup.readthedocs.io/en/stable/installation.html')
         return 1
 
