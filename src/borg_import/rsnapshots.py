@@ -14,6 +14,7 @@ def get_snapshots(root):
             abs_path = root / path
             meta = dict(
                 name=make_name(parsed['backup_set'], parsed['snapshot_id']),
+                backup_set=parsed['backup_set'],
                 path=abs_path,
                 timestamp=datetime_from_mtime(abs_path),
             )
