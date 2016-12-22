@@ -10,4 +10,4 @@ borg-env
 .idea/
 .cache/
 src/borg_import/_version.py
-
+.eggs/
