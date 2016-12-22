@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from pathlib import Path
 
 import pytest
 
@@ -7,12 +8,12 @@ from ..timestamps import datetime_from_mtime, datetime_from_string
 
 
 def test_datetime_from_mtime(tmpdir):
-    fn = str(tmpdir.join("mtime_test"))
-    with open(fn, "w"):
+    fn = Path(str(tmpdir.join("mtime_test")))
+    with fn.open("w"):
         pass
     dt = datetime(1999, 12, 31, 23, 59, 59)
     atime = mtime = dt.timestamp()
-    os.utime(fn, (atime, mtime))  # touch file
+    os.utime(str(fn), (atime, mtime))  # touch file
     assert datetime_from_mtime(fn) == dt
 
 
