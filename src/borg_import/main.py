@@ -59,7 +59,11 @@ def import_rsnapshot(args):
             print('Skipping (already exists in repository):', name)
             continue
 
-        print('Importing {} (timestamp {}) as {}'.format(rsnapshot['name'], timestamp, archive_name))
+        print('Importing {} (timestamp {}) '.format(name, timestamp), end='')
+        if archive_name != name:
+            print('as', archive_name)
+        else:
+            print()
 
         log.debug('  Symlinking {} -> {}'.format(import_path, rsnapshot['path']))
 
