@@ -29,4 +29,3 @@ def test_make_name():
 
     # mixed
     assert make_name(s, b_utf8, 1) == 'äöü-äöü-1'
-

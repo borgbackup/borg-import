@@ -1,0 +1,15 @@
+[run]
+branch = True
+source = borg
+omit =
+    */borg_import/helpers/testsuite/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if 0:
+    if __name__ == .__main__.:
+ignore_errors = True

@@ -1,5 +1,4 @@
 from datetime import datetime
-import os
 
 
 def datetime_from_mtime(path):
@@ -17,7 +16,7 @@ def datetime_from_mtime(path):
 def datetime_from_string(s):
     """
     parse datetime from a string
-    
+
     returns a datetime object if the format could be parsed.
     raises ValueError if not.
     """
@@ -50,4 +49,3 @@ def datetime_from_file(path):
     with path.open() as f:
         ts = f.readline().strip()
     return datetime_from_string(ts)
-
