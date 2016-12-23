@@ -17,9 +17,11 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
+import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
+
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 # -- General configuration ------------------------------------------------
 
@@ -51,8 +53,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'borg-import'
-copyright = '2016, The Borg Collective'
+project = 'Borg - Import'
+copyright = '2016 The Borg Collective (see AUTHORS file)'
 author = 'The Borg Collective'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -79,6 +81,7 @@ language = None
 # Else, today_fmt is used as the format for a strftime call.
 #
 # today_fmt = '%B %d, %Y'
+today_fmt = '%Y-%m-%d'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -122,7 +125,19 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+if not on_rtd:  # only import and set the theme if we're building docs locally
+    import sphinx_rtd_theme
+    html_theme = 'sphinx_rtd_theme'
+    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+    html_style = 'css/borg.css'
+else:
+    html_context = {
+        'css_files': [
+            'https://media.readthedocs.org/css/sphinx_rtd_theme.css',
+            'https://media.readthedocs.org/css/readthedocs-doc-embed.css',
+            '_static/css/borg.css',
+        ],
+    }
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -146,17 +161,20 @@ html_theme = 'alabaster'
 # of the sidebar.
 #
 # html_logo = None
+html_logo = '_static/logo.png'
 
 # The name of an image file (relative to this directory) to use as a favicon of
 # the docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
 #
 # html_favicon = None
+html_favicon = '_static/favicon.ico'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+#html_static_path = ['_static']
+html_static_path = ['borg_theme']
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
@@ -169,6 +187,7 @@ html_static_path = ['_static']
 # The empty string is equivalent to '%b %d, %Y'.
 #
 # html_last_updated_fmt = None
+html_last_updated_fmt = '%Y-%m-%d'
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.
@@ -178,6 +197,11 @@ html_static_path = ['_static']
 # Custom sidebar templates, maps document names to template names.
 #
 # html_sidebars = {}
+# Custom sidebar templates, maps document names to template names.
+html_sidebars = {
+    'index': ['sidebarlogo.html', 'sidebarusefullinks.html', 'searchbox.html'],
+    '**': ['sidebarlogo.html', 'relations.html', 'searchbox.html', 'localtoc.html', 'sidebarusefullinks.html']
+}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
