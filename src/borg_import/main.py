@@ -4,6 +4,7 @@ import shutil
 import shlex
 import subprocess
 import sys
+import textwrap
 from pathlib import Path
 
 from .rsnapshots import get_snapshots
@@ -43,6 +44,7 @@ def list_borg_archives(args):
 class Importer:
     name = 'name-of-command'
     description = 'descriptive description describing this importer'
+    epilog = 'epilog-y epilog epiloging about this importer (docstringy for multiple lines)'
 
     def populate_parser(self, parser):
         """
@@ -62,6 +64,19 @@ class Importer:
 class rsnapshotImporter(Importer):
     name = 'rsnapshot'
     description = 'import rsnapshot backups'
+    epilog = """
+    Imports from rsnapshot backup sets by renaming each snapshot
+    to a common name independent of the snapshot (and the backup set),
+    which allows the Borg files cache to work with maximum efficiency.
+
+    The directory is called "borg-import-dir" inside the rsnapshot root,
+    and borg-import will note which snapshot is currently located there
+    in a file called "borg-import-dir.snapshot" besides it, in case
+    things go wrong.
+
+    Otherwise nothing in the rsnapshot root is modified, and neither
+    are the contents of the snapshots.
+    """
 
     def populate_parser(self, parser):
         parser.add_argument('--backup-set', help='Only consider given backup set (can be given multiple times).',
@@ -69,7 +84,7 @@ class rsnapshotImporter(Importer):
         parser.add_argument('rsnapshot_root', metavar='RSNAPSHOT_ROOT',
                             help='Path to rsnapshot root directory', type=Path)
         # TODO: support the full wealth of borg possibilities
-        parser.add_argument('repository', metavar='REPOSITORY', help='Borg repository', type=Path)
+        parser.add_argument('repository', metavar='BORG_REPOSITORY', help='Borg repository', type=Path)
         parser.set_defaults(function=self.import_rsnapshot)
 
     def import_rsnapshot(self, args):
@@ -119,12 +134,7 @@ class rsnapshotImporter(Importer):
                 import_journal.unlink()
 
 
-def main():
-    if not shutil.which('borg'):
-        print('The \'borg\' command can\'t be found in the PATH. Please correctly install borgbackup first.')
-        print('See instructions at https://borgbackup.readthedocs.io/en/stable/installation.html')
-        return 1
-
+def build_parser():
     common_parser = argparse.ArgumentParser(add_help=False)
     common_group = common_parser.add_argument_group('Common options')
 
@@ -143,9 +153,22 @@ def main():
 
     for importer_class in Importer.__subclasses__():
         importer = importer_class()
-        subparser = subparsers.add_parser(importer.name, help=importer.description, parents=[common_parser])
+        subparser = subparsers.add_parser(importer.name,
+                                          help=importer.description, epilog=textwrap.dedent(importer.epilog),
+                                          formatter_class=argparse.RawDescriptionHelpFormatter,
+                                          parents=[common_parser])
         importer.populate_parser(subparser)
 
+    return parser
+
+
+def main():
+    if not shutil.which('borg'):
+        print('The \'borg\' command can\'t be found in the PATH. Please correctly install borgbackup first.')
+        print('See instructions at https://borgbackup.readthedocs.io/en/stable/installation.html')
+        return 1
+
+    parser = build_parser()
     args = parser.parse_args()
     logging.basicConfig(level=args.log_level, format='%(message)s')
 

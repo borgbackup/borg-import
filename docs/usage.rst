@@ -5,12 +5,16 @@
 Usage
 =====
 
-|project_name| consists of a number of commands. Each command accepts
-a number of arguments and options. The following sections will describe each
-command in detail.
+``borg-import`` consists of a number of commands, one for each
+backup system supported. Each accepts a number of arguments and
+options. The following sections will describe each in detail.
 
 General
 -------
 
-...
+.. _rsnapshot:
 
+borg-import rsnapshot
+---------------------
+
+.. generate-usage:: rsnapshot
