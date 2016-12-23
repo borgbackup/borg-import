@@ -4,7 +4,7 @@ from datetime import datetime
 def make_name(*args, dt_format='%Y-%m-%dT%H:%M:%S'):
     """
     assemble borg archive names from components.
-    
+
     args can be anything that converts to str, plus:
 
         - bytes objects, which are safely decoded
@@ -37,5 +37,3 @@ def make_name(*args, dt_format='%Y-%m-%dT%H:%M:%S'):
         s = s.replace('::', ':')
         components.append(s)
     return '-'.join(components)
-
-

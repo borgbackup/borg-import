@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 *-*
 import sys
+from setuptools import setup, find_packages
 
 min_python = (3, 4)
 my_python = sys.version_info
@@ -8,13 +9,8 @@ if my_python < min_python:
     print("borg-import requires Python %d.%d or later" % min_python)
     sys.exit(1)
 
-
-from setuptools import setup, find_packages
-
-
 with open('README.rst', 'r') as fd:
     long_description = fd.read()
-
 
 setup(
     name='borg-import',
