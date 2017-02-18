@@ -18,8 +18,9 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import sys
+
+sys.path.insert(0, os.path.abspath('.'))
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
@@ -34,6 +35,7 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'usage',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -54,7 +56,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Borg - Import'
-copyright = '2016 The Borg Collective (see AUTHORS file)'
+copyright = '2016-2017 The Borg Collective (see AUTHORS file)'
 author = 'The Borg Collective'
 
 # The version info for the project you're documenting, acts as replacement for
