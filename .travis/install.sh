@@ -5,7 +5,7 @@ set -x
 
 sudo add-apt-repository -y ppa:costamagnagianfranco/borgbackup
 sudo apt-get update
-sudo apt-get install -y borgbackup
+sudo apt-get install -y fakeroot borgbackup
 
 pip install 'virtualenv<14.0'
 python -m virtualenv ~/.venv
