@@ -17,7 +17,7 @@ def borg_import(args, archive_name, path, timestamp=None):
     if timestamp:
         borg_cmdline += '--timestamp', timestamp.isoformat()
     if args.create_options:
-        borg_cmdline.append(args.create_options)
+        borg_cmdline += args.create_options.split()
 
     repository = args.repository.resolve()
     location = '{}::{}'.format(repository, archive_name)
