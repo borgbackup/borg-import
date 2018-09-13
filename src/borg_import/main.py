@@ -8,6 +8,7 @@ import textwrap
 from pathlib import Path
 
 from .rsnapshots import get_snapshots
+from .rsynchl import get_rsyncsnapshots
 
 log = logging.getLogger(__name__)
 
@@ -106,6 +107,78 @@ class rsnapshotImporter(Importer):
             if args.backup_sets and rsnapshot['backup_set'] not in args.backup_sets:
                 print('Skipping (backup set is not selected):', name)
                 continue
+
+            if archive_name in existing_archives:
+                print('Skipping (already exists in repository):', name)
+                continue
+
+            print('Importing {} (timestamp {}) '.format(name, timestamp), end='')
+            if archive_name != name:
+                print('as', archive_name)
+            else:
+                print()
+            log.debug('  Moving {} -> {}'.format(rsnapshot['path'], import_path))
+
+            # We move the snapshots to import_path so that the files cache in Borg can work effectively.
+
+            with import_journal.open('w') as fd:
+                fd.write('Current snapshot: %s\n' % rsnapshot['name'])
+                fd.write('Original path: %s\n' % snapshot_original_path)
+
+            snapshot_original_path.rename(import_path)
+
+            try:
+                borg_import(args, archive_name, import_path, timestamp=timestamp)
+            finally:
+                log.debug('  Moving {} -> {}'.format(import_path, rsnapshot['path']))
+                import_path.rename(snapshot_original_path)
+                import_journal.unlink()
+
+
+class rsynchlImporter(Importer):
+    name = 'rsynchl'
+    description = 'import rsync+hardlink backups'
+    epilog = """
+    Imports from rsync backup sets by renaming each snapshot to a common
+    name independent of the snapshot, which allows the Borg files cache
+    to work with maximum efficiency.
+
+    An archive will be created for each folder in the rsync_root. The
+    archive name will be the folder name and the archive timestamp will
+    be the folder mtime. If the borg repository already contains an
+    archive with the folder name, that folder will be skipped.
+
+    The directory is called "borg-import-dir" inside the specified root,
+    and borg-import will note which snapshot is currently located there
+    in a file called "borg-import-dir.snapshot" besides it, in case
+    things go wrong.
+
+    Otherwise nothing in the rsync root is modified, and neither
+    are the contents of the snapshots.
+    """
+
+    def populate_parser(self, parser):
+        parser.add_argument('rsync_root', metavar='RSYNC_ROOT',
+                            help='Path to root directory', type=Path)
+        # TODO: support the full wealth of borg possibilities
+        parser.add_argument('repository', metavar='BORG_REPOSITORY', help='Borg repository', type=Path)
+        parser.set_defaults(function=self.import_rsynchl)
+
+    def import_rsynchl(self, args):
+        existing_archives = list_borg_archives(args)
+
+        import_path = args.rsync_root / 'borg-import-dir'
+        import_journal = args.rsync_root / 'borg-import-dir.snapshot'
+
+        if import_path.exists():
+            print('{} exists. Cannot continue.'.format(import_path))
+            return 1
+
+        for rsnapshot in get_rsyncsnapshots(args.rsync_root):
+            timestamp = rsnapshot['timestamp'].replace(microsecond=0)
+            snapshot_original_path = rsnapshot['path']
+            name = rsnapshot['name']
+            archive_name = args.prefix + name
 
             if archive_name in existing_archives:
                 print('Skipping (already exists in repository):', name)
