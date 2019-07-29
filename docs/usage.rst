@@ -12,6 +12,12 @@ options. The following sections will describe each in detail.
 General
 -------
 
+Note that |project_name| will ask you for your repo's passphrase
+which blocks the import until you enter it. To let |project_name|
+continue automatically, you can pass the environment variable
+*BORG_PASSPHRASE*:
+:code:`BORG_PASSPHRASE=xxxxxx borg-import ....`
+
 .. _rsnapshot:
 
 borg-import rsnapshot
