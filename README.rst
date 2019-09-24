@@ -11,9 +11,7 @@ Currently supported imports
 rsnapshot
 ---------
 
-```
-borg-import rsnapshot SNAPSHOT_ROOT BORG_REPOSITORY
-```
+Usage ``borg-import rsnapshot SNAPSHOT_ROOT BORG_REPOSITORY``.
 
 See ``borg-import rsnapshot -h`` for help.
 
@@ -22,9 +20,7 @@ Simple rsync with hard links
 
 Assumes one folder per archive, using folder mtime
 
-```
-borg-import rsynchl RSYNC_ROOT BORG_REPOSITORY
-```
+Usage ``borg-import rsynchl RSYNC_ROOT BORG_REPOSITORY``
 
 See ``borg-import rsynchl -h`` for help.
 
