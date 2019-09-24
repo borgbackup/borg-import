@@ -32,3 +32,8 @@ Requires the tool match the assumptions listed for plain rsync with hard links
 * `backintime <https://github.com/bit-team/backintime>`_
 
 * others?
+
+Planned
+=======
+
+Complex rsync with hard links (e.g. multiple hosts, separate backup time).
