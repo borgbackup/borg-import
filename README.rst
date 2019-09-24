@@ -1,9 +1,7 @@
 What is borg-import?
 ====================
 
-Scripts to imports backups from other backup software into `BorgBackup <https://github.com/borgbackup/borg>` 's archive format.
-
-`BorgWeb <https://borgweb.readthedocs.io/>`
+Scripts to imports backups from other backup software into `BorgBackup <https://github.com/borgbackup/borg>`'s archive format.
 
 See ``borg-import -h`` for general help.
 
