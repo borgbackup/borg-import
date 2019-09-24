@@ -29,6 +29,6 @@ Backup tools based on rsync with hard links
 
 Requires the tool match the assumptions listed for plain rsync with hard links
 
-* backintime
+* `backintime <https://github.com/bit-team/backintime>`
 
 * others?
