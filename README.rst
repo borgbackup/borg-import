@@ -1,7 +1,7 @@
 What is borg-import?
 ====================
 
-borg-import imports backups from other backup software into BorgBackup's archive format.
+Scripts to imports backups from other backup software into BorgBackup's archive format.
 
 See ``borg-import -h`` for general help.
 
