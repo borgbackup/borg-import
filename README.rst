@@ -8,7 +8,7 @@ See ``borg-import -h`` for general help.
 Currently supported imports
 ===========================
 
-rsnapshot
+`rsnapshot <https://github.com/rsnapshot/rsnapshot>`_
 ---------
 
 Usage ``borg-import rsnapshot SNAPSHOT_ROOT BORG_REPOSITORY``.
