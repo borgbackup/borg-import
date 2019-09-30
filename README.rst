@@ -1,7 +1,7 @@
 What is borg-import?
 ====================
 
-borg-import can import from other backup software into the format used by `BorgBackup <https://github.com/borgbackup/borg>`_.
+borg-import converts backups made with other backup software into the format used by `BorgBackup <https://github.com/borgbackup/borg>`_.
 
 See ``borg-import -h`` for more information.
 
@@ -9,7 +9,7 @@ Currently supported import formats
 ==================================
 
 `rsnapshot <https://github.com/rsnapshot/rsnapshot>`_
----------
+-----------------------------------------------------
 
 Usage: ``borg-import rsnapshot SNAPSHOT_ROOT BORG_REPOSITORY``
 
