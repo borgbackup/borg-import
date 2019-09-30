@@ -1,33 +1,35 @@
 What is borg-import?
 ====================
 
-A set of scripts to import from other backup software into the archive format used by `BorgBackup <https://github.com/borgbackup/borg>`_.
+borg-import can import from other backup software into the format used by `BorgBackup <https://github.com/borgbackup/borg>`_.
 
-See ``borg-import -h`` for general help.
+See ``borg-import -h`` for more information.
 
-Currently supported imports
-===========================
+Currently supported import formats
+==================================
 
 `rsnapshot <https://github.com/rsnapshot/rsnapshot>`_
 ---------
 
-Usage ``borg-import rsnapshot SNAPSHOT_ROOT BORG_REPOSITORY``.
+Usage: ``borg-import rsnapshot SNAPSHOT_ROOT BORG_REPOSITORY``
 
 See ``borg-import rsnapshot -h`` for help.
 
 Simple rsync with hard links
 ----------------------------
 
-Assumes one folder per archive, using folder mtime
+Assumes one folder per archive, with changes being tracked based on last modification time (mtime).
 
-Usage ``borg-import rsynchl RSYNC_ROOT BORG_REPOSITORY``
+Usage: ``borg-import rsynchl RSYNC_ROOT BORG_REPOSITORY``
 
 See ``borg-import rsynchl -h`` for help.
 
 Backup tools based on rsync with hard links
 -------------------------------------------
 
-Requires the tool match the assumptions listed for plain rsync with hard links
+borg-import should, in principle, be able to import backups from any backup tool that is
+based on rsync with hard links. This requires that the tool match the assumptions listed above, for plain
+rsync.
 
 * `backintime <https://github.com/bit-team/backintime>`_
 
