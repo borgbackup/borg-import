@@ -28,7 +28,7 @@ Backup tools based on rsync with hard links
 -------------------------------------------
 
 borg-import should, in principle, be able to import backups from any backup tool that is
-based on rsync with hard links. This requires that the tool match the assumptions listed above for simple
+based on rsync with hard links. This requires that the tool matches the assumptions listed above for simple
 rsync.
 
 * `backintime <https://github.com/bit-team/backintime>`_
