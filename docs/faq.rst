@@ -6,7 +6,7 @@ Frequently asked questions
 ==========================
 
 My old backup program isn't officially supported. Can I still use borg-import?
-----
+------------------------------------------------------------------------------
 
 Chances are good that your old backup program is using some
 kind of rsync+hardlinks mechanisms that will work with
