@@ -1,4 +1,4 @@
-virtualenv==16.7.7
-tox<3.10
-pytest<5.0
+virtualenv
+tox
+pytest
 pytest-cov
