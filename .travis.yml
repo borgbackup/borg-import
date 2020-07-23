@@ -8,14 +8,22 @@ cache:
 
 matrix:
     include:
-        - python: 3.4
-          os: linux
-          dist: xenial
-          env: TOXENV=py34
         - python: 3.5
           os: linux
           dist: xenial
-          env: TOXENV=py35
+          env: TOXENV=py3
+        - python: 3.6
+          os: linux
+          dist: xenial
+          env: TOXENV=py36
+        - python: 3.7
+          os: linux
+          dist: xenial
+          env: TOXENV=py37
+        - python: 3.8
+          os: linux
+          dist: xenial
+          env: TOXENV=py38
         - python: 3.5
           os: linux
           dist: xenial
