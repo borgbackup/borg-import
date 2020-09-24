@@ -1,32 +1,62 @@
-sudo: required
-
 language: python
 
 cache:
     directories:
         - $HOME/.cache/pip
 
-matrix:
+os: linux
+
+jobs:
     include:
-        - python: 3.5
-          os: linux
-          dist: xenial
+        # Ubuntu Xenial (16.04)
+        - dist: xenial
+          python: 3.5
           env: TOXENV=py35
-        - python: 3.6
-          os: linux
-          dist: xenial
+        - dist: xenial
+          python: 3.6
           env: TOXENV=py36
-        - python: 3.7
-          os: linux
-          dist: xenial
+        - dist: xenial
+          python: 3.7
           env: TOXENV=py37
-        - python: 3.8
-          os: linux
-          dist: xenial
+        - dist: xenial
+          python: 3.8
           env: TOXENV=py38
-        - python: 3.5
-          os: linux
-          dist: xenial
+        - dist: xenial
+          python: 3.5
+          env: TOXENV=flake8
+        
+        # Ubuntu Bionic (18.04)
+        - dist: bionic
+          python: 3.5
+          env: TOXENV=py35
+        - dist: bionic
+          python: 3.6
+          env: TOXENV=py36
+        - dist: bionic
+          python: 3.7
+          env: TOXENV=py37
+        - dist: bionic
+          python: 3.8
+          env: TOXENV=py38
+        - dist: bionic
+          python: 3.5
+          env: TOXENV=flake8
+        
+        # Ubuntu Focal (20.04)
+        - dist: focal
+          python: 3.5
+          env: TOXENV=py35
+        - dist: focal
+          python: 3.6
+          env: TOXENV=py36
+        - dist: focal
+          python: 3.7
+          env: TOXENV=py37
+        - dist: focal
+          python: 3.8
+          env: TOXENV=py38
+        - dist: focal
+          python: 3.5
           env: TOXENV=flake8
 
 install:
