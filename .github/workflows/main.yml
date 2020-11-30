@@ -39,6 +39,7 @@ jobs:
               toxenv: py39
     env:
       TOXENV: ${{ matrix.toxenv }}
+      OS: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -60,6 +61,6 @@ jobs:
       run: | 
         tox --skip-missing-interpreters
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}        
+      run: |
+        ln .tox/.coverage .coverage
+        codecov -e $OS $TOXENV  
