@@ -44,6 +44,8 @@ jobs:
         coverage run -m pytest
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
+      env: 
+        python: ${{ matrix.python-version }}
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        env_vars: ${{ matrix.python-version }}
+        env_vars: python
