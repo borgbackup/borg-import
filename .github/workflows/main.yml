@@ -21,24 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-            - os: ubuntu-20.04
-              python-version: 3.5
-              toxenv: py35
-            - os: ubuntu-20.04
-              python-version: 3.6
-              toxenv: py36
-            - os: ubuntu-20.04
-              python-version: 3.7
-              toxenv: py37
-            - os: ubuntu-20.04
-              python-version: 3.8
-              toxenv: py38
-            - os: ubuntu-20.04
-              python-version: 3.9
-              toxenv: py39
-    env:
-      TOXENV: ${{ matrix.toxenv }}
+        python-version: [3.5, 3.6, 3.7, 3.8, 3.9]
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -56,9 +39,9 @@ jobs:
         pip install -r requirements.d/development.txt
         pip install codecov
         pip install -e .
-    - name: Run tox
+    - name: Run tests
       run: | 
-        tox --skip-missing-interpreters
+        coverage run -m pytest
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:

@@ -1,6 +1,5 @@
 [run]
 branch = True
-source = borg
 omit =
     */borg_import/helpers/testsuite/*
 
