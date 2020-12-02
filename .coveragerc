@@ -1,5 +1,6 @@
 [run]
 branch = True
+source = src/borg-import
 omit =
     */borg_import/helpers/testsuite/*
 relative_files = True
