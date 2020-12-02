@@ -1,6 +1,6 @@
 name: Test
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   lint:
@@ -21,7 +21,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8, 3.9]
+        include:
+            - os: ubuntu-20.04
+              python-version: 3.5
+              toxenv: py35
+            - os: ubuntu-20.04
+              python-version: 3.6
+              toxenv: py36
+            - os: ubuntu-20.04
+              python-version: 3.7
+              toxenv: py37
+            - os: ubuntu-20.04
+              python-version: 3.8
+              toxenv: py38
+            - os: ubuntu-20.04
+              python-version: 3.9
+              toxenv: py39
+    env:
+      TOXENV: ${{ matrix.toxenv }}
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -39,13 +56,10 @@ jobs:
         pip install -r requirements.d/development.txt
         pip install codecov
         pip install -e .
-    - name: Run tests
+    - name: Run tox
       run: | 
-        coverage run -m pytest
+        tox --skip-missing-interpreters
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
-      env: 
-        python: ${{ matrix.python-version }}
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        env_vars: python
+        token: ${{ secrets.CODECOV_TOKEN }}        
