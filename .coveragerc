@@ -1,9 +1,8 @@
 [run]
 branch = True
-source = src/borg-import
+source = src/borg_import
 omit =
     */borg_import/helpers/testsuite/*
-relative_files = True
 
 [report]
 exclude_lines =
