@@ -2,7 +2,7 @@ import re
 
 from .helpers.discover import discover, parser
 from .helpers.names import make_name
-from .helpers.timestamps import datetime_from_mtime, datetime_from_dir
+from .helpers.timestamps import datetime_from_mtime
 
 
 def get_rsyncsnapshots(root):
@@ -15,7 +15,6 @@ def get_rsyncsnapshots(root):
             meta = dict(
                 name=make_name(parsed['snapshot_name']),
                 path=abs_path,
-                #timestamp=datetime_from_mtime(abs_path),
-                timestamp=datetime_from_dir(abs_path),
+                timestamp=datetime_from_mtime(abs_path),
             )
             yield meta
