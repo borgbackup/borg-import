@@ -1,5 +1,4 @@
-from datetime import datetime, timedelta
-import time
+from datetime import datetime
 
 
 def datetime_from_mtime(path):
@@ -34,37 +33,6 @@ def datetime_from_string(s):
             ]:
         try:
             return datetime.strptime(s, ts_format)
-        except ValueError:
-            # didn't work with this format, try next
-            pass
-    else:
-        raise ValueError('could not parse %r' % s)
-
-
-def datetime_from_dir(d, p=4):
-    """
-    parse datetime from part of a directory name
-
-    returns a datetime object if the format could be parsed.
-    raises ValueError if not.
-    """
-    if type(d).__name__ == 'PosixPath':
-            s = d.name
-    elif type(d) == str:
-            # in case input is just a string (for testing)
-            s = d
-    # get rid of trailing -??? numbers that BackInTime adds
-    s = s[:-p].strip()
-    for ts_format in [
-            # Back In Time format
-            '%Y%m%d-%H%M%S',
-            ]:
-        try:
-            dt = datetime.strptime(s, ts_format)
-            # adjust time zone offset to get UTC
-            tz = int(time.strftime('%z')[:-2])
-            ut = dt - timedelta(hours=tz)
-            return ut
         except ValueError:
             # didn't work with this format, try next
             pass
