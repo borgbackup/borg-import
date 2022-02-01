@@ -43,7 +43,8 @@ def list_borg_archives(args):
 
 
 def repo_resolve(repository):
-    if '@' in str(repository):
+    repo_str = str(repository)
+    if repo_str.startswith('ssh://') or '@' in repo_str:
         # looks like a remote repo - don't try and resolve the path
         return repository
     else:
