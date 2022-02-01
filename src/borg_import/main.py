@@ -20,7 +20,7 @@ def borg_import(args, archive_name, path, timestamp=None):
     if args.create_options:
         borg_cmdline += args.create_options.split()
 
-    repository = args.repository.resolve()
+    repository = repo_resolve(args.repository)
     location = '{}::{}'.format(repository, archive_name)
     borg_cmdline.append(location)
     borg_cmdline.append('.')
@@ -37,9 +37,17 @@ def borg_import(args, archive_name, path, timestamp=None):
 
 def list_borg_archives(args):
     borg_cmdline = ['borg', 'list', '--short']
-    repository = args.repository.resolve()
+    repository = repo_resolve(args.repository)
     borg_cmdline.append(str(repository))
     return subprocess.check_output(borg_cmdline).decode().splitlines()
+
+
+def repo_resolve(repository):
+    if '@' in str(repository):
+        # looks like a remote repo - don't try and resolve the path
+        return repository
+    else:
+        return repository.resolve()
 
 
 class Importer:
