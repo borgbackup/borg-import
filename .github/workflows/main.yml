@@ -23,9 +23,6 @@ jobs:
       matrix:
         include:
             - os: ubuntu-20.04
-              python-version: 3.5
-              toxenv: py35
-            - os: ubuntu-20.04
               python-version: 3.6
               toxenv: py36
             - os: ubuntu-20.04
