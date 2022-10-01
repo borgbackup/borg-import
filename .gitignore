@@ -1,5 +1,6 @@
 MANIFEST
 docs/_build
+borg/
 build
 dist
 borg-env
