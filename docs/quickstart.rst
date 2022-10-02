@@ -5,4 +5,4 @@
 Quick Start
 ===========
 
-This chapter will get you started with |project_name|.
+This chapter will get you started with Borg-Import.
