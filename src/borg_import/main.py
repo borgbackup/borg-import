@@ -20,9 +20,7 @@ def borg_import(args, archive_name, path, timestamp=None):
     if args.create_options:
         borg_cmdline += args.create_options.split()
 
-    repository = args.repository.resolve()
-    location = '{}::{}'.format(repository, archive_name)
-    borg_cmdline.append(location)
+    borg_cmdline.append(args.repository + "::" + archive_name)
     borg_cmdline.append('.')
 
     log.debug('Borg command line: %r', borg_cmdline)
@@ -37,8 +35,7 @@ def borg_import(args, archive_name, path, timestamp=None):
 
 def list_borg_archives(args):
     borg_cmdline = ['borg', 'list', '--short']
-    repository = args.repository.resolve()
-    borg_cmdline.append(str(repository))
+    borg_cmdline.append(args.repository)
     return subprocess.check_output(borg_cmdline).decode().splitlines()
 
 
@@ -85,7 +82,8 @@ class rsnapshotImporter(Importer):
         parser.add_argument('rsnapshot_root', metavar='RSNAPSHOT_ROOT',
                             help='Path to rsnapshot root directory', type=Path)
         # TODO: support the full wealth of borg possibilities
-        parser.add_argument('repository', metavar='BORG_REPOSITORY', help='Borg repository', type=Path)
+        parser.add_argument('repository', metavar='BORG_REPOSITORY',
+                            help='Borg repository (must be an absolute local path or a remote repo specification)')
         parser.set_defaults(function=self.import_rsnapshot)
 
     def import_rsnapshot(self, args):
@@ -161,7 +159,8 @@ class rsynchlImporter(Importer):
         parser.add_argument('rsync_root', metavar='RSYNC_ROOT',
                             help='Path to root directory', type=Path)
         # TODO: support the full wealth of borg possibilities
-        parser.add_argument('repository', metavar='BORG_REPOSITORY', help='Borg repository', type=Path)
+        parser.add_argument('repository', metavar='BORG_REPOSITORY',
+                            help='Borg repository (must be an absolute local path or a remote repo specification)')
         parser.set_defaults(function=self.import_rsynchl)
 
     def import_rsynchl(self, args):
