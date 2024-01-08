@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 def datetime_from_mtime(path):
@@ -10,7 +10,7 @@ def datetime_from_mtime(path):
     at backup time).
     """
     t = path.stat().st_mtime
-    return datetime.fromtimestamp(t)
+    return datetime.fromtimestamp(t, tz=timezone.utc)
 
 
 def datetime_from_string(s):
