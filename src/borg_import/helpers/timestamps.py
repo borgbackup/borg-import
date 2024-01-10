@@ -10,6 +10,7 @@ def datetime_from_mtime(path):
     at backup time).
     """
     t = path.stat().st_mtime
+    # Borg needs UTC timestamps.
     return datetime.fromtimestamp(t, tz=timezone.utc)
 
 
@@ -17,7 +18,7 @@ def datetime_from_string(s):
     """
     parse datetime from a string
 
-    returns a datetime object if the format could be parsed.
+    returns a UTC-aware datetime object if the format could be parsed.
     raises ValueError if not.
     """
     s = s.strip()
@@ -29,10 +30,29 @@ def datetime_from_string(s):
             '%Y-%m-%d %H:%M',
             # date tool output [C / en_US locale]:
             '%a %b %d %H:%M:%S %Z %Y',
+            # rsync-time-backup format
+            '%Y-%m-%d-%H%M%S'
             # for more, see https://xkcd.com/1179/
             ]:
         try:
-            return datetime.strptime(s, ts_format)
+            if ts_format in ('%a %b %d %H:%M:%S %Z %Y',) and 'UTC' in s:
+                # %Z returns a naive datetime, despite a timezone being specified.
+                # However, strptime %Z only tends to work on local times and
+                # UTC.
+                #
+                # Per astimezone docs:
+                # If self is naive, it is presumed to represent time in the
+                # system timezone.
+                #
+                # If we had a UTC time zone, prevent conversion to aware
+                # datetime from assuming a local timezone before conversion
+                # to UTC.
+                #
+                # If "UTC" wasn't specified, assume the timezone specified
+                # was local and hope for the best.
+                return datetime.strptime(s, ts_format).replace(tzinfo=timezone.utc)
+            else:
+                return datetime.strptime(s, ts_format).astimezone(tz=timezone.utc)
         except ValueError:
             # didn't work with this format, try next
             pass
