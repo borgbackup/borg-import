@@ -35,7 +35,7 @@ Usage: ``borg-import rsynchl RSYNC_ROOT BORG_REPOSITORY``
 See ``borg-import rsynchl -h`` for help.
 
 `rsync-time-backup <https://github.com/laurent22/rsync-time-backup>`_
-----------------------------
+---------------------------------------------------------------------
 
 Similar to `rsynchl`, except with timestamp extraction optimized for `rsync-time-backup` folder names.
 

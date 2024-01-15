@@ -10,7 +10,7 @@ def datetime_from_mtime(path):
     at backup time).
     """
     t = path.stat().st_mtime
-    # Borg needs UTC timestamps.
+    # Borg needs tz-aware timestamps in UTC timezone.
     return datetime.fromtimestamp(t, tz=timezone.utc)
 
 
@@ -18,7 +18,9 @@ def datetime_from_string(s):
     """
     parse datetime from a string
 
-    returns a UTC-aware datetime object if the format could be parsed.
+    returns a tz-aware datetime object in UTC timezone if the format could be
+    parsed.
+
     raises ValueError if not.
     """
     s = s.strip()
@@ -44,14 +46,15 @@ def datetime_from_string(s):
                 # If self is naive, it is presumed to represent time in the
                 # system timezone.
                 #
-                # If we had a UTC time zone, prevent conversion to aware
+                # If we had a UTC timezone, prevent conversion to aware
                 # datetime from assuming a local timezone before conversion
                 # to UTC.
-                #
-                # If "UTC" wasn't specified, assume the timezone specified
-                # was local and hope for the best.
                 return datetime.strptime(s, ts_format).replace(tzinfo=timezone.utc)
             else:
+                # If "UTC" wasn't specified using the above ts_format, assume
+                # the timezone specified was local and hope for the best.
+                # This handles all other ts_formats as well, which are assumed
+                # to be local since they don't carry timezone.
                 return datetime.strptime(s, ts_format).astimezone(tz=timezone.utc)
         except ValueError:
             # didn't work with this format, try next
