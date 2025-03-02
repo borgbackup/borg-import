@@ -36,23 +36,3 @@ To find out about the mailing list, its topic, how to subscribe, how to
 unsubscribe and where you can find the archives of the list, see the
 `mailing list homepage
 <https://mail.python.org/mailman/listinfo/borgbackup>`_.
-
-Bounties and Fundraisers
-------------------------
-
-We use `BountySource <https://www.bountysource.com/teams/borgbackup>`_ to allow
-monetary contributions to the project and the developers, who push it forward.
-
-There, you can give general funds to the borgbackup members (the developers will
-then spend the funds as they deem fit). If you do not have some specific bounty
-(see below), you can use this as a general way to say "Thank You!" and support
-the software / project you like.
-
-If you want to encourage developers to fix some specific issue or implement some
-specific feature suggestion, you can post a new bounty or back an existing one
-(they always refer to an issue in our `issue tracker`_).
-
-As a developer, you can become a Bounty Hunter and win bounties (earn money) by
-contributing to Borg-Import, a free and open source software project.
-
-We might also use BountySource to fund raise for some bigger goals.
