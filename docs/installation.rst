@@ -14,3 +14,19 @@ Open a terminal in the borg-import directory and execute the following to instal
 
 If you have */home/user/.local/bin/* in your ``PATH`` variable, you can then start using Borg-Import.
 Otherwise, you will need to add *.local/bin/* to your ``PATH``.
+
+For Developers
+--------------
+
+If you're planning to contribute to Borg-Import, you should set up the development environment:
+
+1. Install development dependencies:
+
+   :code:`pip install -r requirements.d/development.txt`
+
+2. Set up pre-commit hooks:
+
+   :code:`pre-commit install`
+
+This will automatically run code formatting (black) and linting (flake8) checks before each commit.
+The pre-commit hooks will ensure your code follows the project's style guidelines.

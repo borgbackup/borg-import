@@ -4,3 +4,4 @@ pytest
 pytest-cov
 flake8-pyproject
 black
+pre-commit
