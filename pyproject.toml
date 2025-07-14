@@ -57,20 +57,19 @@ max-line-length = 120
 exclude = "build,dist,.git,.idea,.cache,.tox,docs/conf.py,.eggs"
 
 [tool.tox]
-legacy_tox_ini = """
-[tox]
-envlist = py{39,310,311,312,313},flake8
+env_list = ["py39", "py310", "py311", "py312", "py313", "flake8"]
 
-[testenv]
-usedevelop = True
-deps =
-     -rrequirements.d/development.txt
-commands = py.test -rs --cov=borg_import --cov-config=.coveragerc --pyargs {posargs:borg_import.helpers.testsuite}
-# fakeroot -u needs some env vars:
-passenv = *
+[tool.tox.env_run_base]
+package = "editable-legacy"
+passenv = ["*"]
 
-[testenv:flake8]
-changedir =
-deps = flake8-pyproject
-commands = flake8
-"""
+[tool.tox.env_pkg_base]
+passenv = ["*"]
+
+[tool.tox.env.testenv]
+deps = ["-rrequirements.d/development.txt"]
+commands = [["pytest", "-rs", "--cov=borg_import", "--cov-config=.coveragerc", "--pyargs={posargs:borg_import.helpers.testsuite}"]]
+
+[tool.tox.env.flake8]
+deps = ["flake8-pyproject"]
+commands = [["flake8"]]
