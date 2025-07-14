@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "borg-import"
+description = "Import backups made with misc. other software into borgbackup"
+readme = "README.rst"
+authors = [
+    {name = "The Borg Collective (see AUTHORS file)", email = "borgbackup@python.org"}
+]
+license = {text = "BSD"}
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Environment :: Console",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Archiving :: Backup",
+]
+requires-python = ">=3.8"
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://borgimport.readthedocs.io/"
+
+[project.scripts]
+borg-import = "borg_import.main:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+zip-safe = false
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools_scm]
+write_to = "src/borg_import/_version.py"
+
+[tool.pytest]
+python_files = "testsuite/*.py"
+testpaths = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-rs --cov=borg_import --cov-config=.coveragerc"
+
+[tool.flake8]
+max-line-length = 120
+exclude = "build,dist,.git,.idea,.cache,.tox,docs/conf.py,.eggs"
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = py{38,39,310,311,312},flake8
+
+[testenv]
+usedevelop = True
+deps =
+     -rrequirements.d/development.txt
+commands = py.test -rs --cov=borg_import --cov-config=.coveragerc --pyargs {posargs:borg_import.helpers.testsuite}
+# fakeroot -u needs some env vars:
+passenv = *
+
+[testenv:flake8]
+changedir =
+deps = flake8-pyproject
+commands = flake8
+"""
