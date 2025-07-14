@@ -53,7 +53,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "Borg - Import"
-copyright = "2016-2017 The Borg Collective (see AUTHORS file)"
+copyright = "2016-2025 The Borg Collective (see AUTHORS file)"
 author = "The Borg Collective"
 
 # The version info for the project you're documenting, acts as replacement for
