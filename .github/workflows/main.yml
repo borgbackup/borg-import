@@ -15,6 +15,10 @@ jobs:
       run: |
         pip install flake8-pyproject
         flake8
+    - name: Check formatting with black
+      run: |
+        pip install black
+        black --check .
   test:
     needs: lint
     runs-on: ${{ matrix.os }}

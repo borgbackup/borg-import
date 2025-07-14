@@ -70,7 +70,7 @@ exclude_lines = [
 ignore_errors = true
 
 [tool.tox]
-env_list = ["py39", "py310", "py311", "py312", "py313", "flake8"]
+env_list = ["py39", "py310", "py311", "py312", "py313", "flake8", "black"]
 
 [tool.tox.env_run_base]
 package = "editable-legacy"
@@ -85,3 +85,10 @@ passenv = ["*"]
 
 [tool.tox.env.flake8]
 commands = [["flake8"]]
+
+[tool.tox.env.black]
+commands = [["black", "--check", "."]]
+
+[tool.black]
+line-length = 120
+skip-magic-trailing-comma = true
