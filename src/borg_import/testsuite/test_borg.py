@@ -24,28 +24,15 @@ def test_borg_import(tmpdir, monkeypatch):
     subprocess.check_call(["borg", "init", "--encryption=none", str(source_repo)])
 
     # Create archives in the source repository
-    subprocess.check_call([
-        "borg", "create",
-        f"{source_repo}::archive1",
-        "."
-    ], cwd=str(archive1_data))
+    subprocess.check_call(["borg", "create", f"{source_repo}::archive1", "."], cwd=str(archive1_data))
 
-    subprocess.check_call([
-        "borg", "create",
-        f"{source_repo}::archive2",
-        "."
-    ], cwd=str(archive2_data))
+    subprocess.check_call(["borg", "create", f"{source_repo}::archive2", "."], cwd=str(archive2_data))
 
     # Initialize the target repository
     subprocess.check_call(["borg", "init", "--encryption=none", str(target_repo)])
 
     # Set up command line arguments for borg-import
-    monkeypatch.setattr("sys.argv", [
-        "borg-import",
-        "borg",
-        str(source_repo),
-        str(target_repo)
-    ])
+    monkeypatch.setattr("sys.argv", ["borg-import", "borg", str(source_repo), str(target_repo)])
 
     # Run the borg-import command
     main()
@@ -61,15 +48,9 @@ def test_borg_import(tmpdir, monkeypatch):
     extract_dir1 = tmpdir.mkdir("extract1")
     extract_dir2 = tmpdir.mkdir("extract2")
 
-    subprocess.check_call([
-        "borg", "extract",
-        f"{target_repo}::archive1"
-    ], cwd=str(extract_dir1))
+    subprocess.check_call(["borg", "extract", f"{target_repo}::archive1"], cwd=str(extract_dir1))
 
-    subprocess.check_call([
-        "borg", "extract",
-        f"{target_repo}::archive2"
-    ], cwd=str(extract_dir2))
+    subprocess.check_call(["borg", "extract", f"{target_repo}::archive2"], cwd=str(extract_dir2))
 
     # Verify the contents of the extracted archives
     assert extract_dir1.join("file1.txt").read() == "This is file 1 in archive 1"
