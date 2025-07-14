@@ -330,7 +330,7 @@ class borgImporter(Importer):
             with tempfile.TemporaryDirectory() as extract_path:
                 try:
                     # Extract the archive from the source repository
-                    extract_cmdline = ['borg', 'extract', '--numeric-owner']
+                    extract_cmdline = ['borg', 'extract', '--numeric-ids']
                     extract_cmdline.append(args.source_repository + '::' + name)
 
                     print('  Extracting archive to temporary directory...')
