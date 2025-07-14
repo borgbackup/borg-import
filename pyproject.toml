@@ -50,11 +50,27 @@ python_files = "testsuite/*.py"
 testpaths = ["src"]
 
 [tool.pytest.ini_options]
-addopts = "-rs --cov=borg_import --cov-config=.coveragerc"
+addopts = "-rs --cov=borg_import --cov-config=pyproject.toml"
 
 [tool.flake8]
 max-line-length = 120
 exclude = "build,dist,.git,.idea,.cache,.tox,docs/conf.py,.eggs"
+
+[tool.coverage.run]
+branch = true
+source = ["src/borg_import"]
+omit = ["*/borg_import/helpers/testsuite/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:"
+]
+ignore_errors = true
 
 [tool.tox]
 env_list = ["py39", "py310", "py311", "py312", "py313", "flake8"]
@@ -68,7 +84,7 @@ passenv = ["*"]
 
 [tool.tox.env.testenv]
 deps = ["-rrequirements.d/development.txt"]
-commands = [["pytest", "-rs", "--cov=borg_import", "--cov-config=.coveragerc", "--pyargs={posargs:borg_import.helpers.testsuite}"]]
+commands = [["pytest", "-rs", "--cov=borg_import", "--cov-config=pyproject.toml", "--pyargs={posargs:borg_import.helpers.testsuite}"]]
 
 [tool.tox.env.flake8]
 deps = ["flake8-pyproject"]
