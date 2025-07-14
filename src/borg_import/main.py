@@ -1,10 +1,10 @@
 import argparse
 import logging
+import os
 import shutil
 import shlex
 import subprocess
 import sys
-import tempfile
 import textwrap
 from pathlib import Path
 
@@ -17,7 +17,7 @@ log = logging.getLogger(__name__)
 
 
 def borg_import(args, archive_name, path, timestamp=None):
-    borg_cmdline = ['borg', 'create', '--numeric-ids']
+    borg_cmdline = ['borg', 'create', '--numeric-ids', '--files-cache=mtime,size']
     if timestamp:
         borg_cmdline += '--timestamp', timestamp.isoformat()
     if args.create_options:
@@ -293,9 +293,10 @@ class borgImporter(Importer):
     This is useful when a Borg repository needs to be rebuilt and all archives
     transferred from the old repository to a new one.
 
-    The importer extracts each archive from the source repository to a temporary
-    directory and then creates a new archive with the same name and timestamp in
-    the destination repository.
+    The importer extracts each archive from the source repository to a intermediate
+    directory inside the current work directory (make sure there is enough space!)
+    and then creates a new archive with the same name and timestamp in the destination
+    repository.
 
     Because the importer changes the current directory while importing archives,
     you need to give either absolute paths for the source and destination repositories
@@ -315,38 +316,50 @@ class borgImporter(Importer):
     def import_borg(self, args):
         existing_archives = list_borg_archives(args)
 
-        for archive in get_borg_archives(args.source_repository):
-            name = archive['name']
-            timestamp = archive['timestamp'].replace(microsecond=0)
-            archive_name = args.prefix + name
+        # Create a fixed unique directory inside the current working directory
+        import_path = Path.cwd() / f"borg_import_{os.getpid()}"
+        import_path.mkdir(exist_ok=True)
 
-            if archive_name in existing_archives:
-                print('Skipping (already exists in repository):', name)
-                continue
+        try:
+            for archive in get_borg_archives(args.source_repository):
+                name = archive['name']
+                timestamp = archive['timestamp'].replace(microsecond=0)
+                archive_name = args.prefix + name
 
-            print('Importing {} (timestamp {}) '.format(name, timestamp), end='')
-            if archive_name != name:
-                print('as', archive_name)
-            else:
-                print()
+                if archive_name in existing_archives:
+                    print('Skipping (already exists in repository):', name)
+                    continue
 
-            # Create a temporary directory for extraction
-            with tempfile.TemporaryDirectory() as extract_path:
+                print('Importing {} (timestamp {}) '.format(name, timestamp), end='')
+                if archive_name != name:
+                    print('as', archive_name)
+                else:
+                    print()
+
                 try:
                     # Extract the archive from the source repository
                     extract_cmdline = ['borg', 'extract', '--numeric-ids']
                     extract_cmdline.append(args.source_repository + '::' + name)
 
-                    print('  Extracting archive to temporary directory...')
-                    subprocess.check_call(extract_cmdline, cwd=extract_path)
+                    print('  Extracting archive to import directory...')
+                    subprocess.check_call(extract_cmdline, cwd=str(import_path))
 
                     # Create a new archive in the destination repository
-                    borg_import(args, archive_name, extract_path, timestamp=timestamp)
+                    borg_import(args, archive_name, str(import_path), timestamp=timestamp)
+
+                    # Empty the directory after importing the archive
+                    print('  Cleaning import directory...')
+                    shutil.rmtree(import_path)
+                    import_path.mkdir(exist_ok=True)
 
                 except subprocess.CalledProcessError as cpe:
                     print('Error during import of {}: {}'.format(name, cpe))
                     if cpe.returncode != 1:  # Borg returns 1 for warnings
                         raise
+        finally:
+            # Clean up the import directory when done
+            if import_path.exists():
+                shutil.rmtree(import_path)
 
 
 def build_parser():
