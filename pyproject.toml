@@ -1,0 +1,91 @@
+[build-system]
+requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "borg-import"
+description = "Import backups made with misc. other software into borgbackup"
+readme = "README.rst"
+authors = [
+    {name = "The Borg Collective (see AUTHORS file)", email = "borgbackup@python.org"}
+]
+license = {text = "BSD"}
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: System :: Archiving :: Backup",
+]
+requires-python = ">=3.9"
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://borgimport.readthedocs.io/"
+
+[project.scripts]
+borg-import = "borg_import.main:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+zip-safe = false
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools_scm]
+write_to = "src/borg_import/_version.py"
+
+[tool.pytest]
+python_files = "testsuite/*.py"
+testpaths = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-rs --cov=borg_import --cov-config=pyproject.toml"
+
+[tool.flake8]
+max-line-length = 120
+exclude = "build,dist,.git,.idea,.cache,.tox,docs/conf.py,.eggs"
+
+[tool.coverage.run]
+branch = true
+source = ["src/borg_import"]
+omit = ["*/borg_import/helpers/testsuite/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:"
+]
+ignore_errors = true
+
+[tool.tox]
+env_list = ["py39", "py310", "py311", "py312", "py313", "flake8"]
+
+[tool.tox.env_run_base]
+package = "editable-legacy"
+passenv = ["*"]
+
+[tool.tox.env_pkg_base]
+passenv = ["*"]
+
+[tool.tox.env.testenv]
+deps = ["-rrequirements.d/development.txt"]
+commands = [["pytest", "-rs", "--cov=borg_import", "--cov-config=pyproject.toml", "--pyargs={posargs:borg_import.helpers.testsuite}"]]
+
+[tool.tox.env.flake8]
+deps = ["flake8-pyproject"]
+commands = [["flake8"]]
