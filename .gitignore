@@ -9,5 +9,6 @@ borg-env
 *.pyo
 .idea/
 .cache/
+.coverage
 src/borg_import/_version.py
 .eggs/
