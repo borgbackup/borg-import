@@ -25,13 +25,13 @@ def test_borg_import(tmpdir, monkeypatch):
 
     # Create archives in the source repository
     subprocess.check_call([
-        "borg", "create", "--numeric-ids",
+        "borg", "create",
         f"{source_repo}::archive1",
         "."
     ], cwd=str(archive1_data))
 
     subprocess.check_call([
-        "borg", "create", "--numeric-ids",
+        "borg", "create",
         f"{source_repo}::archive2",
         "."
     ], cwd=str(archive2_data))

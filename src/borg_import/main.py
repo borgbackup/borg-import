@@ -302,6 +302,9 @@ class borgImporter(Importer):
     you need to give either absolute paths for the source and destination repositories
     or ssh:// URLs.
 
+    To avoid issues with user/group id-to-name mappings, the importer will only
+    transfer the numeric user and group ids for the files inside the archives.
+
     By default, archive names are preserved. Use --prefix to add a prefix to
     the imported archive names.
     """
