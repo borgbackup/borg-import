@@ -32,6 +32,8 @@ def datetime_from_string(s):
             '%Y-%m-%d %H:%M',
             # date tool output [C / en_US locale]:
             '%a %b %d %H:%M:%S %Z %Y',
+            # borg format with day of week
+            '%a, %Y-%m-%d %H:%M:%S',
             # rsync-time-backup format
             '%Y-%m-%d-%H%M%S'
             # for more, see https://xkcd.com/1179/

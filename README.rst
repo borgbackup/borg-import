@@ -18,6 +18,17 @@ Note: we have different importers and some importers may not support all the fea
 Currently supported import formats
 ==================================
 
+`BorgBackup <https://github.com/borgbackup/borg>`_
+--------------------------------------------------
+
+Imports archives from an existing Borg repository into a new one.
+This is useful when a Borg repository needs to be rebuilt (e.g. if
+your borg key and passphrase was compromised).
+
+Usage: ``borg-import borg SOURCE_REPOSITORY DESTINATION_REPOSITORY``
+
+See ``borg-import borg -h`` for help.
+
 `rsnapshot <https://github.com/rsnapshot/rsnapshot>`_
 -----------------------------------------------------
 

@@ -4,18 +4,20 @@ import shutil
 import shlex
 import subprocess
 import sys
+import tempfile
 import textwrap
 from pathlib import Path
 
 from .rsnapshots import get_snapshots
 from .rsynchl import get_rsyncsnapshots
 from .rsync_tmbackup import get_tmbackup_snapshots
+from .borg import get_borg_archives
 
 log = logging.getLogger(__name__)
 
 
 def borg_import(args, archive_name, path, timestamp=None):
-    borg_cmdline = ['borg', 'create']
+    borg_cmdline = ['borg', 'create', '--numeric-ids']
     if timestamp:
         borg_cmdline += '--timestamp', timestamp.isoformat()
     if args.create_options:
@@ -280,6 +282,67 @@ class rsyncTmBackupImporter(Importer):
                 log.debug('  Moving {} -> {}'.format(import_path, rsnapshot['path']))
                 import_path.rename(snapshot_original_path)
                 import_journal.unlink()
+
+
+class borgImporter(Importer):
+    name = 'borg'
+    description = 'import archives from another Borg repository'
+    epilog = """
+    Imports archives from an existing Borg repository into a new one.
+
+    This is useful when a Borg repository needs to be rebuilt and all archives
+    transferred from the old repository to a new one.
+
+    The importer extracts each archive from the source repository to a temporary
+    directory and then creates a new archive with the same name and timestamp in
+    the destination repository.
+
+    By default, archive names are preserved. Use --prefix to add a prefix to
+    the imported archive names.
+    """
+
+    def populate_parser(self, parser):
+        parser.add_argument('source_repository', metavar='SOURCE_REPOSITORY',
+                            help='Source Borg repository (must be a valid Borg repository spec)')
+        parser.add_argument('repository', metavar='DESTINATION_REPOSITORY',
+                            help='Destination Borg repository (must be a valid Borg repository spec)')
+        parser.set_defaults(function=self.import_borg)
+
+    def import_borg(self, args):
+        existing_archives = list_borg_archives(args)
+
+        for archive in get_borg_archives(args.source_repository):
+            name = archive['name']
+            timestamp = archive['timestamp'].replace(microsecond=0)
+            archive_name = args.prefix + name
+
+            if archive_name in existing_archives:
+                print('Skipping (already exists in repository):', name)
+                continue
+
+            print('Importing {} (timestamp {}) '.format(name, timestamp), end='')
+            if archive_name != name:
+                print('as', archive_name)
+            else:
+                print()
+
+            # Create a temporary directory for extraction
+            with tempfile.TemporaryDirectory() as extract_path:
+                try:
+                    # Extract the archive from the source repository
+                    extract_cmdline = ['borg', 'extract', '--numeric-owner']
+                    extract_cmdline.append(args.source_repository + '::' + name)
+
+                    print('  Extracting archive to temporary directory...')
+                    subprocess.check_call(extract_cmdline, cwd=extract_path)
+
+                    # Create a new archive in the destination repository
+                    borg_import(args, archive_name, extract_path, timestamp=timestamp)
+
+                except subprocess.CalledProcessError as cpe:
+                    print('Error during import of {}: {}'.format(name, cpe))
+                    if cpe.returncode != 1:  # Borg returns 1 for warnings
+                        raise
 
 
 def build_parser():

@@ -24,3 +24,10 @@ borg-import rsnapshot
 ---------------------
 
 .. generate-usage:: rsnapshot
+
+.. _borg:
+
+borg-import borg
+----------------
+
+.. generate-usage:: borg
