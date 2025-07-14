@@ -49,9 +49,6 @@ write_to = "src/borg_import/_version.py"
 python_files = "testsuite/*.py"
 testpaths = ["src"]
 
-[tool.pytest.ini_options]
-addopts = "-rs --cov=borg_import --cov-config=pyproject.toml"
-
 [tool.flake8]
 max-line-length = 120
 exclude = "build,dist,.git,.idea,.cache,.tox,docs/conf.py,.eggs"
@@ -59,7 +56,7 @@ exclude = "build,dist,.git,.idea,.cache,.tox,docs/conf.py,.eggs"
 [tool.coverage.run]
 branch = true
 source = ["src/borg_import"]
-omit = ["*/borg_import/helpers/testsuite/*"]
+omit = ["*/borg_import/helpers/testsuite/*", "*/borg_import/testsuite/*"]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -77,15 +74,14 @@ env_list = ["py39", "py310", "py311", "py312", "py313", "flake8"]
 
 [tool.tox.env_run_base]
 package = "editable-legacy"
+commands = [["pytest", "-v", "-rs", "--cov=borg_import", "--cov-config=pyproject.toml", "--pyargs", "{posargs:borg_import}"]]
+deps = ["-rrequirements.d/development.txt"]
 passenv = ["*"]
 
 [tool.tox.env_pkg_base]
 passenv = ["*"]
 
-[tool.tox.env.testenv]
-deps = ["-rrequirements.d/development.txt"]
-commands = [["pytest", "-rs", "--cov=borg_import", "--cov-config=pyproject.toml", "--pyargs={posargs:borg_import.helpers.testsuite}"]]
+[tool.tox.env."py{39,310,311,312,313}"]
 
 [tool.tox.env.flake8]
-deps = ["flake8-pyproject"]
 commands = [["flake8"]]
