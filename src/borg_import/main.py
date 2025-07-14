@@ -297,6 +297,10 @@ class borgImporter(Importer):
     directory and then creates a new archive with the same name and timestamp in
     the destination repository.
 
+    Because the importer changes the current directory while importing archives,
+    you need to give either absolute paths for the source and destination repositories
+    or ssh:// URLs.
+
     By default, archive names are preserved. Use --prefix to add a prefix to
     the imported archive names.
     """
