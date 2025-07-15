@@ -15,6 +15,10 @@ jobs:
       run: |
         pip install flake8-pyproject
         flake8
+    - name: Check formatting with black
+      run: |
+        pip install -r requirements.d/codestyle.txt
+        black --check .
   test:
     needs: lint
     runs-on: ${{ matrix.os }}
@@ -58,9 +62,9 @@ jobs:
         pip install codecov
         pip install -e .
     - name: Run tox
-      run: | 
+      run: |
         tox --skip-missing-interpreters
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}        
+        token: ${{ secrets.CODECOV_TOKEN }}

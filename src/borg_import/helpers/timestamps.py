@@ -25,21 +25,21 @@ def datetime_from_string(s):
     """
     s = s.strip()
     for ts_format in [
-            # ISO-8601-like:
-            '%Y-%m-%dT%H:%M:%S',
-            '%Y-%m-%dT%H:%M',
-            '%Y-%m-%d %H:%M:%S',
-            '%Y-%m-%d %H:%M',
-            # date tool output [C / en_US locale]:
-            '%a %b %d %H:%M:%S %Z %Y',
-            # borg format with day of week
-            '%a, %Y-%m-%d %H:%M:%S',
-            # rsync-time-backup format
-            '%Y-%m-%d-%H%M%S'
-            # for more, see https://xkcd.com/1179/
-            ]:
+        # ISO-8601-like:
+        "%Y-%m-%dT%H:%M:%S",
+        "%Y-%m-%dT%H:%M",
+        "%Y-%m-%d %H:%M:%S",
+        "%Y-%m-%d %H:%M",
+        # date tool output [C / en_US locale]:
+        "%a %b %d %H:%M:%S %Z %Y",
+        # borg format with day of week
+        "%a, %Y-%m-%d %H:%M:%S",
+        # rsync-time-backup format
+        "%Y-%m-%d-%H%M%S",
+        # for more, see https://xkcd.com/1179/
+    ]:
         try:
-            if ts_format in ('%a %b %d %H:%M:%S %Z %Y',) and 'UTC' in s:
+            if ts_format in ("%a %b %d %H:%M:%S %Z %Y",) and "UTC" in s:
                 # %Z returns a naive datetime, despite a timezone being specified.
                 # However, strptime %Z only tends to work on local times and
                 # UTC.
@@ -62,7 +62,7 @@ def datetime_from_string(s):
             # didn't work with this format, try next
             pass
     else:
-        raise ValueError('could not parse %r' % s)
+        raise ValueError("could not parse %r" % s)
 
 
 def datetime_from_file(path):

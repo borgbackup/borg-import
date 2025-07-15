@@ -70,12 +70,12 @@ exclude_lines = [
 ignore_errors = true
 
 [tool.tox]
-env_list = ["py39", "py310", "py311", "py312", "py313", "flake8"]
+env_list = ["py39", "py310", "py311", "py312", "py313", "flake8", "black"]
 
 [tool.tox.env_run_base]
 package = "editable-legacy"
 commands = [["pytest", "-v", "-rs", "--cov=borg_import", "--cov-config=pyproject.toml", "--pyargs", "{posargs:borg_import}"]]
-deps = ["-rrequirements.d/development.txt"]
+deps = ["-rrequirements.d/development.txt", "-rrequirements.d/codestyle.txt"]
 passenv = ["*"]
 
 [tool.tox.env_pkg_base]
@@ -85,3 +85,10 @@ passenv = ["*"]
 
 [tool.tox.env.flake8]
 commands = [["flake8"]]
+
+[tool.tox.env.black]
+commands = [["black", "--check", "."]]
+
+[tool.black]
+line-length = 120
+skip-magic-trailing-comma = true

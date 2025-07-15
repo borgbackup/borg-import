@@ -3,3 +3,4 @@ tox
 pytest
 pytest-cov
 flake8-pyproject
+pre-commit

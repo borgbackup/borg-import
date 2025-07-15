@@ -1,7 +1,7 @@
 from datetime import datetime
 
 
-def make_name(*args, dt_format='%Y-%m-%dT%H:%M:%S'):
+def make_name(*args, dt_format="%Y-%m-%dT%H:%M:%S"):
     """
     assemble borg archive names from components.
 
@@ -23,17 +23,17 @@ def make_name(*args, dt_format='%Y-%m-%dT%H:%M:%S'):
     components = []
     for arg in args:
         if isinstance(arg, bytes):
-            s = arg.decode('utf-8', errors='surrogateescape')
+            s = arg.decode("utf-8", errors="surrogateescape")
         elif isinstance(arg, datetime):
             s = arg.strftime(dt_format)
         else:
             s = str(arg)
         # we don't want to have blanks for practical shell-usage reasons:
-        s = s.replace(' ', '_')
+        s = s.replace(" ", "_")
         # the slash is not allowed in archive names
         # (archive name = FUSE directory name)
-        s = s.replace('/', '!')
+        s = s.replace("/", "!")
         # :: is repo::archive separator, not allowed in archive names
-        s = s.replace('::', ':')
+        s = s.replace("::", ":")
         components.append(s)
-    return '-'.join(components)
+    return "-".join(components)

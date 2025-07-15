@@ -6,6 +6,7 @@ def discover(root, depth):
     """
     recurse starting from <root> path and yield relative dir paths with wanted <depth>.
     """
+
     def _discover(root, current_dir, current_depth, wanted_depth):
         entries = sorted(os.listdir(current_dir))
         for entry in entries:
