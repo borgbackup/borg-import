@@ -45,7 +45,7 @@ where = ["src"]
 [tool.setuptools_scm]
 write_to = "src/borg_import/_version.py"
 
-[tool.pytest]
+[tool.pytest.ini_options]
 python_files = "testsuite/*.py"
 testpaths = ["src"]
 
