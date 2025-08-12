@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Version 0.1 (not released yet)
-------------------------------
+Version 0.1 (unreleased)
+------------------------
 
 Bug fixes:
 

@@ -1,8 +1,8 @@
 .. include:: global.rst.inc
 
-=================
-Authors & License
-=================
+===================
+Authors and License
+===================
 
 .. include:: ../AUTHORS
 

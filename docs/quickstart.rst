@@ -2,7 +2,7 @@
 .. highlight:: bash
 .. _quickstart:
 
-Quick Start
-===========
+Quickstart
+==========
 
-This chapter will get you started with Borg-Import.
+This guide will get you started with borg-import.
