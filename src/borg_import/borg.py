@@ -4,8 +4,8 @@ from .helpers.timestamps import datetime_from_string
 
 
 def get_borg_archives(repository):
-    """Get all archive metadata discovered in the Borg repository."""
-    # Get list of archives with their timestamps
+    """Return metadata for all archives discovered in the Borg repository."""
+    # Get a list of archives with their timestamps
     borg_cmdline = ["borg", "list", "--format", "{name}{TAB}{time}{NL}", repository]
     output = subprocess.check_output(borg_cmdline).decode()
 

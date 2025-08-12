@@ -4,7 +4,7 @@ import re
 
 def discover(root, depth):
     """
-    recurse starting from <root> path and yield relative dir paths with wanted <depth>.
+    Recurse from the given root path and yield relative directory paths at the specified depth.
     """
 
     def _discover(root, current_dir, current_depth, wanted_depth):
@@ -23,6 +23,7 @@ def discover(root, depth):
 
 
 def parser(rel_path, regex):
+    """Parse rel_path with regex and return a dict of named groups, or None if no match."""
     m = re.match(regex, rel_path)
     if m:
         return m.groupdict()

@@ -6,7 +6,7 @@ from .helpers.timestamps import datetime_from_mtime
 
 
 def get_rsyncsnapshots(root):
-    """Get all snapshot metadata discovered in the rsync root directory."""
+    """Return metadata for all snapshots discovered in the rsync root directory."""
     regex = re.compile(r"(?P<snapshot_name>.+)")
     for path in discover(str(root), 1):
         parsed = parser(path, regex)
