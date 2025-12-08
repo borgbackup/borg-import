@@ -46,7 +46,7 @@ where = ["src"]
 write_to = "src/borg_import/_version.py"
 
 [tool.pytest]
-python_files = "testsuite/*.py"
+python_files = ["testsuite/*.py"]
 testpaths = ["src"]
 
 [tool.flake8]
