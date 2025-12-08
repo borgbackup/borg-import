@@ -33,7 +33,7 @@ def borg_import(args, archive_name, path, timestamp=None):
     except subprocess.CalledProcessError as cpe:
         if cpe.returncode != 1:
             raise
-        log.debug("Borg exited with a warning (being quiet about it since Borg spoke already)")
+        log.debug("Borg exited with a warning (not repeating details since Borg already reported them)")
 
 
 def list_borg_archives(args):
@@ -72,7 +72,7 @@ class rsnapshotImporter(Importer):
 
     The directory is called "borg-import-dir" inside the rsnapshot root,
     and borg-import will note which snapshot is currently located there
-    in a file called "borg-import-dir.snapshot" besides it, in case
+    in a file called "borg-import-dir.snapshot" beside it, in case
     things go wrong.
 
     Otherwise nothing in the rsnapshot root is modified, and neither
@@ -146,7 +146,7 @@ class rsnapshotImporter(Importer):
 
 class rsynchlImporter(Importer):
     name = "rsynchl"
-    description = "import rsync+hardlink backups"
+    description = "import rsync-with-hard-links backups"
     epilog = """
     Imports from rsync backup sets by renaming each snapshot to a common
     name independent of the snapshot, which allows the Borg files cache
@@ -159,7 +159,7 @@ class rsynchlImporter(Importer):
 
     The directory is called "borg-import-dir" inside the specified root,
     and borg-import will note which snapshot is currently located there
-    in a file called "borg-import-dir.snapshot" besides it, in case
+    in a file called "borg-import-dir.snapshot" beside it, in case
     things go wrong.
 
     Otherwise nothing in the rsync root is modified, and neither
@@ -237,7 +237,7 @@ class rsyncTmBackupImporter(Importer):
 
     The directory is called "borg-import-dir" inside the specified root,
     and borg-import will note which snapshot is currently located there
-    in a file called "borg-import-dir.snapshot" besides it, in case
+    in a file called "borg-import-dir.snapshot" beside it, in case
     things go wrong.
 
     Otherwise nothing in the rsync root is modified, and neither
@@ -305,7 +305,7 @@ class borgImporter(Importer):
     This is useful when a Borg repository needs to be rebuilt and all archives
     transferred from the old repository to a new one.
 
-    The importer extracts each archive from the source repository to a intermediate
+    The importer extracts each archive from the source repository to an intermediate
     directory inside the current work directory (make sure there is enough space!)
     and then creates a new archive with the same name and timestamp in the destination
     repository.
@@ -419,7 +419,7 @@ def build_parser():
 
 def main():
     if not shutil.which("borg"):
-        print("The 'borg' command can't be found in the PATH. Please correctly install borgbackup first.")
+        print("The 'borg' command cannot be found in PATH. Please install BorgBackup first.")
         print("See instructions at https://borgbackup.readthedocs.io/en/stable/installation.html")
         return 1
 

@@ -6,7 +6,7 @@ from .helpers.timestamps import datetime_from_mtime
 
 
 def get_snapshots(root):
-    """Get all snapshot metadata discovered in the rsnapshot root directory."""
+    """Return metadata for all snapshots discovered in the rsnapshot root directory."""
     regex = re.compile(r"(?P<snapshot_id>.+)/(?P<backup_set>.+)")
     for path in discover(str(root), 2):
         parsed = parser(path, regex)

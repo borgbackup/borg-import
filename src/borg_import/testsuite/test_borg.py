@@ -4,7 +4,7 @@ from borg_import.main import main
 
 
 def test_borg_import(tmpdir, monkeypatch):
-    """Test the borg importer by creating archives in a source repo and importing them to a target repo."""
+    """Test the Borg importer by creating archives in a source repository and importing them to a target repository."""
     # Create source and target repository directories
     source_repo = tmpdir.mkdir("source_repo")
     target_repo = tmpdir.mkdir("target_repo")

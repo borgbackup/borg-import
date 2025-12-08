@@ -7,11 +7,11 @@ from .helpers.timestamps import datetime_from_string
 
 
 def get_tmbackup_snapshots(root, prefix):
-    """Get all snapshot metadata discovered in the rsync root directory."""
+    """Return metadata for all snapshots discovered in the rsync root directory."""
     regex = re.compile(r"(?P<snapshot_date>.+)")
 
     if not Path("backup.marker").exists():
-        raise FileNotFoundError("backup.marker file should exist for rsync-time-backup import")
+        raise FileNotFoundError("The backup.marker file must exist for rsync-time-backup import")
 
     for path in discover(str(root), 1):
         parsed = parser(path, regex)
@@ -24,9 +24,9 @@ def get_tmbackup_snapshots(root, prefix):
             )
             yield meta
         elif parsed["snapshot_date"] in ("latest",):
-            # latest is a symlink to the most recent build. Import it anyway
-            # in case user wants to do borg mount/has existing references
-            # to latest.
+            # "latest" is a symlink to the most recent backup. Import it anyway
+            # in case the user wants to do borg mount or has existing references
+            # to "latest".
             abs_path = root / path
             timestamp = Path("latest").resolve().name
             meta = dict(

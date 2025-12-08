@@ -1,6 +1,6 @@
 .. include:: global.rst.inc
 
-Borg-Import Documentation
+borg-import Documentation
 =========================
 
 .. include:: ../README.rst

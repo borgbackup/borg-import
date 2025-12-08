@@ -4,7 +4,7 @@ from ..names import make_name
 
 
 def test_make_name():
-    # str (some with invalid/unwanted chars)
+    # str (some with invalid/unwanted characters)
     assert make_name("backup name") == "backup_name"
     assert make_name("backup/name") == "backup!name"
     assert make_name("backup::name") == "backup:name"
