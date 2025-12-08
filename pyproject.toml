@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=6.2"]
+requires = ["setuptools>=78.1.1", "wheel", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -9,23 +9,23 @@ readme = "README.rst"
 authors = [
     {name = "The Borg Collective (see AUTHORS file)", email = "borgbackup@python.org"}
 ]
-license = {text = "BSD"}
+license = "BSD-3-Clause"
+license-files = ["LICENSE", "AUTHORS"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: System Administrators",
-    "License :: OSI Approved :: BSD License",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: System :: Archiving :: Backup",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dynamic = ["version"]
 
 [project.urls]
@@ -46,7 +46,7 @@ where = ["src"]
 write_to = "src/borg_import/_version.py"
 
 [tool.pytest]
-python_files = "testsuite/*.py"
+python_files = ["testsuite/*.py"]
 testpaths = ["src"]
 
 [tool.flake8]
@@ -70,7 +70,7 @@ exclude_lines = [
 ignore_errors = true
 
 [tool.tox]
-env_list = ["py39", "py310", "py311", "py312", "py313", "flake8", "black"]
+env_list = ["py310", "py311", "py312", "py313", "py314", "flake8", "black"]
 
 [tool.tox.env_run_base]
 package = "editable-legacy"
@@ -81,7 +81,7 @@ passenv = ["*"]
 [tool.tox.env_pkg_base]
 passenv = ["*"]
 
-[tool.tox.env."py{39,310,311,312,313}"]
+[tool.tox.env."py{310,311,312,313,314}"]
 
 [tool.tox.env.flake8]
 commands = [["flake8"]]
