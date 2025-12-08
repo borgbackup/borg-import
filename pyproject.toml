@@ -18,14 +18,14 @@ classifiers = [
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: System :: Archiving :: Backup",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dynamic = ["version"]
 
 [project.urls]
@@ -70,7 +70,7 @@ exclude_lines = [
 ignore_errors = true
 
 [tool.tox]
-env_list = ["py39", "py310", "py311", "py312", "py313", "flake8", "black"]
+env_list = ["py310", "py311", "py312", "py313", "py314", "flake8", "black"]
 
 [tool.tox.env_run_base]
 package = "editable-legacy"
@@ -81,7 +81,7 @@ passenv = ["*"]
 [tool.tox.env_pkg_base]
 passenv = ["*"]
 
-[tool.tox.env."py{39,310,311,312,313}"]
+[tool.tox.env."py{310,311,312,313,314}"]
 
 [tool.tox.env.flake8]
 commands = [["flake8"]]
