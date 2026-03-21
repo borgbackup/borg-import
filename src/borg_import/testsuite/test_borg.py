@@ -84,3 +84,38 @@ def test_rsynchl_import(tmpdir, monkeypatch):
 
     assert len(archives) >= 1
     assert any("backup1" in a or "backup2" in a for a in archives)
+def test_rsync_tmbackup_import(tmpdir, monkeypatch):
+    import subprocess
+    from borg_import.main import main
+
+    source_dir = tmpdir.mkdir("tmbackup_source")
+    target_repo = tmpdir.mkdir("target_repo")
+
+    # required marker file for rsync-time-backup imports
+    source_dir.join("backup.marker").write("")
+
+    # simulate rsync-time-backup style folder names
+    archive1 = source_dir.mkdir("2024-01-01-000000")
+    archive2 = source_dir.mkdir("2024-01-02-000000")
+
+    archive1.join("file.txt").write("hello1")
+    archive2.join("file.txt").write("hello2")
+
+    subprocess.check_call(["borg", "init", "--encryption=none", str(target_repo)])
+
+    monkeypatch.setattr("sys.argv", [
+        "borg-import",
+        "rsync_tmbackup",
+        "--prefix=backup-",
+        str(source_dir),
+        str(target_repo),
+    ])
+
+    main()
+
+    output = subprocess.check_output(
+        ["borg", "list", "--short", str(target_repo)]
+    ).decode()
+    archives = output.splitlines()
+
+    assert len(archives) >= 1
