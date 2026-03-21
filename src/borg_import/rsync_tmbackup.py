@@ -11,24 +11,39 @@ def get_tmbackup_snapshots(root, prefix):
     regex = re.compile(r"(?P<snapshot_date>.+)")
 
     if not (root / "backup.marker").exists():
-        raise FileNotFoundError(f"The backup.marker file must exist inside the provided rsync-time-backup root directory: {root}")
+        raise FileNotFoundError(
+            f"The backup.marker file must exist inside the provided rsync-time-backup root directory: {root}"
+        )
+
     for path in discover(str(root), 1):
         parsed = parser(path, regex)
         if parsed is not None and parsed["snapshot_date"] not in ("latest",):
             abs_path = root / path
+
+            snapshot_date = parsed["snapshot_date"]
+            if prefix and snapshot_date.startswith(prefix):
+                snapshot_date = snapshot_date[len(prefix):]
+
             meta = dict(
                 name=make_name("".join([prefix, parsed["snapshot_date"]])),
                 path=abs_path,
-                timestamp=datetime_from_string(path),
+                timestamp=datetime_from_string(snapshot_date),
             )
             yield meta
-        elif parsed["snapshot_date"] in ("latest",):
+
+        elif parsed is not None and parsed["snapshot_date"] in ("latest",):
             # "latest" is a symlink to the most recent backup. Import it anyway
             # in case the user wants to do borg mount or has existing references
             # to "latest".
             abs_path = root / path
-            timestamp = Path("latest").resolve().name
+            timestamp = (root / "latest").resolve().name
+
+            if prefix and timestamp.startswith(prefix):
+                timestamp = timestamp[len(prefix):]
+
             meta = dict(
-                name=make_name("".join([prefix, "latest"])), path=abs_path, timestamp=datetime_from_string(timestamp)
+                name=make_name("".join([prefix, "latest"])),
+                path=abs_path,
+                timestamp=datetime_from_string(timestamp),
             )
             yield meta
