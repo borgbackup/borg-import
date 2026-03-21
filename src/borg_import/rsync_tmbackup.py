@@ -11,8 +11,7 @@ def get_tmbackup_snapshots(root, prefix):
     regex = re.compile(r"(?P<snapshot_date>.+)")
 
     if not (root / "backup.marker").exists():
-        raise FileNotFoundError("The backup.marker file must exist for rsync-time-backup import")
-
+        raise FileNotFoundError(f"The backup.marker file must exist inside the provided rsync-time-backup root directory: {root}")
     for path in discover(str(root), 1):
         parsed = parser(path, regex)
         if parsed is not None and parsed["snapshot_date"] not in ("latest",):
