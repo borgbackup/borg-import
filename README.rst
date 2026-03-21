@@ -4,6 +4,38 @@ What is borg-import?
 borg-import converts backups made with other backup software into the format used by `BorgBackup <https://github.com/borgbackup/borg>`_.
 
 See ``borg-import -h`` for more information.
+Quick Start (Beginner Guide)
+===========================
+
+This section helps new users quickly install and use borg-import.
+
+Installation
+------------
+
+1. Install BorgBackup:
+
+   On macOS (using Homebrew):
+
+   ``brew install borgbackup``
+
+2. Clone borg-import and install:
+
+   ``git clone https://github.com/borgbackup/borg-import.git``
+   ``cd borg-import``
+   ``python3 -m venv .venv``
+   ``source .venv/bin/activate``
+   ``pip install -e .``
+
+Basic Usage Example
+-------------------
+
+Import backups from rsnapshot:
+
+``borg-import rsnapshot /path/to/snapshots /path/to/borg-repo``
+
+Get help for any command:
+
+``borg-import -h``
 
 Potential advantages over doing it manually
 ===========================================
