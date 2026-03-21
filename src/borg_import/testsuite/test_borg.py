@@ -25,7 +25,6 @@ def test_borg_import(tmpdir, monkeypatch):
 
     # Create archives in the source repository
     subprocess.check_call(["borg", "create", f"{source_repo}::archive1", "."], cwd=str(archive1_data))
-
     subprocess.check_call(["borg", "create", f"{source_repo}::archive2", "."], cwd=str(archive2_data))
 
     # Initialize the target repository
@@ -49,7 +48,6 @@ def test_borg_import(tmpdir, monkeypatch):
     extract_dir2 = tmpdir.mkdir("extract2")
 
     subprocess.check_call(["borg", "extract", f"{target_repo}::archive1"], cwd=str(extract_dir1))
-
     subprocess.check_call(["borg", "extract", f"{target_repo}::archive2"], cwd=str(extract_dir2))
 
     # Verify the contents of the extracted archives
@@ -57,3 +55,32 @@ def test_borg_import(tmpdir, monkeypatch):
     assert extract_dir1.join("file2.txt").read() == "This is file 2 in archive 1"
     assert extract_dir2.join("file1.txt").read() == "This is file 1 in archive 2"
     assert extract_dir2.join("file2.txt").read() == "This is file 2 in archive 2"
+
+
+def test_rsynchl_import(tmpdir, monkeypatch):
+    source_dir = tmpdir.mkdir("rsync_source")
+    target_repo = tmpdir.mkdir("target_repo")
+
+    # create folders simulating rsync backups
+    archive1 = source_dir.mkdir("backup1")
+    archive2 = source_dir.mkdir("backup2")
+
+    archive1.join("file.txt").write("hello1")
+    archive2.join("file.txt").write("hello2")
+
+    subprocess.check_call(["borg", "init", "--encryption=none", str(target_repo)])
+
+    monkeypatch.setattr("sys.argv", [
+        "borg-import",
+        "rsynchl",
+        str(source_dir),
+        str(target_repo)
+    ])
+
+    main()
+
+    output = subprocess.check_output(["borg", "list", "--short", str(target_repo)]).decode()
+    archives = output.splitlines()
+
+    assert len(archives) >= 1
+    assert any("backup1" in a or "backup2" in a for a in archives)
