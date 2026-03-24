@@ -1,6 +1,7 @@
 import subprocess
 from pathlib import Path
 
+
 def test_rsync_tmbackup_import(tmpdir, monkeypatch):
     """Test importing rsync-time-backup style snapshots into a borg repo."""
     src = Path(str(tmpdir.mkdir("tmbackup")))
@@ -24,17 +25,15 @@ def test_rsync_tmbackup_import(tmpdir, monkeypatch):
 
     # Run the importer
     monkeypatch.setattr(
-        "sys.argv",
-        ["borg-import", "rsync_tmbackup", "--prefix", "backup-", str(src), str(target_repo)],
+        "sys.argv", ["borg-import", "rsync_tmbackup", "--prefix", "backup-", str(src), str(target_repo)]
     )
 
     from borg_import.main import main
+
     main()
 
     # Verify archives were created
-    output = subprocess.check_output(
-        ["borg", "list", "--short", str(target_repo)]
-    ).decode()
+    output = subprocess.check_output(["borg", "list", "--short", str(target_repo)]).decode()
     archives = output.splitlines()
 
     assert len(archives) == 2

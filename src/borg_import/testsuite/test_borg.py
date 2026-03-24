@@ -1,5 +1,4 @@
 import subprocess
-from pathlib import Path
 
 from borg_import.main import main
 
