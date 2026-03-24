@@ -10,7 +10,7 @@ def get_tmbackup_snapshots(root, prefix):
     """Return metadata for all snapshots discovered in the rsync root directory."""
     regex = re.compile(r"(?P<snapshot_date>.+)")
 
-    if not Path("backup.marker").exists():
+    if not (root / "backup.marker").exists():
         raise FileNotFoundError("The backup.marker file must exist for rsync-time-backup import")
 
     for path in discover(str(root), 1):

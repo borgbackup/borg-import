@@ -1,4 +1,5 @@
 import subprocess
+from pathlib import Path
 
 from borg_import.main import main
 
@@ -25,7 +26,6 @@ def test_borg_import(tmpdir, monkeypatch):
 
     # Create archives in the source repository
     subprocess.check_call(["borg", "create", f"{source_repo}::archive1", "."], cwd=str(archive1_data))
-
     subprocess.check_call(["borg", "create", f"{source_repo}::archive2", "."], cwd=str(archive2_data))
 
     # Initialize the target repository
@@ -49,7 +49,6 @@ def test_borg_import(tmpdir, monkeypatch):
     extract_dir2 = tmpdir.mkdir("extract2")
 
     subprocess.check_call(["borg", "extract", f"{target_repo}::archive1"], cwd=str(extract_dir1))
-
     subprocess.check_call(["borg", "extract", f"{target_repo}::archive2"], cwd=str(extract_dir2))
 
     # Verify the contents of the extracted archives
