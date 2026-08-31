@@ -3,6 +3,10 @@ What is borg-import?
 
 borg-import converts backups made with other backup software into the format used by `BorgBackup <https://github.com/borgbackup/borg>`_.
 
+Elevator pitch: seamlessly migrate your rsnapshot, rsync-time-backup, or rsync backups
+into a Borg repository — preserving timestamps, handling key rotation, and consolidating
+archives with one command.
+
 See ``borg-import -h`` for more information.
 
 Potential advantages over doing it manually
